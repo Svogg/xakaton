@@ -1,61 +1,57 @@
 from sqlalchemy import (
-    Column, ForeignKey, Integer, String, Boolean, Float
+    Column, ForeignKey, Integer, String, Boolean, Float, ARRAY
 )
 from sqlalchemy.dialects.postgresql import DATE
 
-from create_schemas import Base
+from create_schemas import Base, engine
 
 
 # class
 
 
-class Abstract(object):
+class _Abstract(object):
     id = Column(String, primary_key=True)
 
 
-class GeoData(Abstract, Base):
-    __tablename__ = 'geo_data'
-    center_distance = Column(Float)
-    coordinates_length = Column(Float, nullable=False)
-    coordinates_width = Column(Float, nullable=False)
+class _CityAbstract(object):
+    city_id = Column(String, ForeignKey('city.id'), nullable=True)
 
 
-class Country(Abstract, Base):
-    __tablename__ = 'country'
-    country_name = Column(String, nullable=False)
+class _GeoAbstract(_Abstract):
+    geo_data = Column(ARRAY(Float), nullable=True)
 
 
-class City(Abstract, Base):
-    __tablename__ = 'city'
-    city_name = Column(String, nullable=False)
-    rating = Column(Integer, nullable=False)
-    timezone = Column(String, nullable=False)
-    geo_centre = Column(String, nullable=False)  # Надо подумать над типом данных
-    geo_data_id = Column(String, ForeignKey('geo_data.id'))
-    country_id = Column(String, ForeignKey('country.id'))
-
-
-class CityAbstract(object):
-    city_id = Column(String, ForeignKey('city.id'))
-    geo_data_id = Column(String, ForeignKey('geo_data.id'))
-
-
-class EventsAbstract(CityAbstract, object):
-    start = Column(DATE, nullable=False)
-    end = Column(DATE, nullable=False)
+class _EventsAbstract(_CityAbstract):
+    start = Column(String, nullable=False)
+    end = Column(String, nullable=False)
     price = Column(Float, nullable=True)
 
 
-class Event(Abstract, EventsAbstract, Base):
+class City(_GeoAbstract, Base):
+    __tablename__ = 'city'
+    city_name = Column(String, nullable=False)
+    rating = Column(Integer, nullable=True)
+    timezone = Column(String, nullable=True)
+
+
+# class Hotel(_GeoAbstract, Base):            в работе
+#     __tablename__ = 'hotel'
+#     address = Column(String, nullable=True)
+
+
+class Event(_Abstract, _EventsAbstract, Base):
     __tablename__ = 'event'
 
 
-class Excursion(Abstract, EventsAbstract, Base):
+class Excursion(_GeoAbstract, _EventsAbstract, Base):
     __tablename__ = 'excursion'
 
 
-class Restaurant(Abstract, CityAbstract, Base):
+class Restaurant(_GeoAbstract, _CityAbstract, Base):
     __tablename__ = 'restaurant'
-    name = Column(String, nullable=False)
-    kitchen_type = Column(String, nullable=False)
-    mean_price = Column(Float, nullable=False)
+    name = Column(String, nullable=True)
+    kitchen_type = Column(ARRAY(String), nullable=True)
+    mean_price = Column(Float, nullable=True)
+
+
+Base.metadata.create_all(engine)
