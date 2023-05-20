@@ -52,6 +52,38 @@ class Restaurant(_GeoAbstract, _CityAbstract, Base):
     name = Column(String, nullable=True)
     kitchen_type = Column(ARRAY(String), nullable=True)
     mean_price = Column(Float, nullable=True)
+    
+class Track(_Abstract, Base):
+    __tablename__ = 'track'
+    city = Column(String, ForeignKey('city.id'))
+    region = Column(String, ForeignKey('reqion.id'))
+    days_count = Column(Integer, nullable=False)
+    description = Column(String, nullable=False)
+    price = Column(Integer, nullable=False)
+
+
+class Region(_Abstract, Base):
+    __tablename__ = 'region'
+    title = Column(String, nullable=False)
+    price_hotel = Column(Integer, nullable=False)
+
+
+class Route(_Abstract, Base):
+    __tablename__ = 'route'
+    title = Column(String, nullable=False)
+    time = Column(String, nullable=False)
+    is_can_buy = Column(Boolean, nullable=False)
+    region = Column(String, ForeignKey('reqion.id'))
+
+
+class Hotel(_Abstract, Base):
+    __tablename__ = 'hotel'
+    address = title = Column(String, nullable=False)
+    geo_data = Column(ARRAY(Float), nullable=True)
+    city = Column(String, ForeignKey('city.id'))
+    title = Column(String, nullable=False)
+
 
 
 Base.metadata.create_all(engine)
+
