@@ -35,18 +35,27 @@ class City(Abstract, Base):
     country_id = Column(String, ForeignKey('country.id'))
 
 
-class EventsAbstract(object):
+class CityAbstract(object):
     city_id = Column(String, ForeignKey('city.id'))
     geo_data_id = Column(String, ForeignKey('geo_data.id'))
-    event_start = Column(DATE, nullable=False)
-    event_end = Column(DATE, nullable=False)
-    event_price = Column(Float, nullable=True)
+
+
+class EventsAbstract(CityAbstract, object):
+    start = Column(DATE, nullable=False)
+    end = Column(DATE, nullable=False)
+    price = Column(Float, nullable=True)
 
 
 class Event(Abstract, EventsAbstract, Base):
     __tablename__ = 'event'
-    event_price = Column(Float, nullable=True)
 
 
 class Excursion(Abstract, EventsAbstract, Base):
     __tablename__ = 'excursion'
+
+
+class Restaurant(Abstract, CityAbstract, Base):
+    __tablename__ = 'restaurant'
+    name = Column(String, nullable=False)
+    kitchen_type = Column(String, nullable=False)
+    mean_price = Column(Float, nullable=False)
