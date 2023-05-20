@@ -1,20 +1,20 @@
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from config import DB_DRIVER, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
-
-DATABASE_URL = "{}+{}://{}:{}@{}:{}/{}".format(
-    DB_DRIVER, DB_CONNECTOR,
-    DB_USER, DB_PASS,
-    DB_HOST, DB_PORT,
-    DB_NAME
-)
+from config import DATABASE_URL
 
 metadata = MetaData()
 
 engine = create_engine(
     DATABASE_URL
 )
+
+Session = sessionmaker(engine)
+
+
+def get_session():
+    with Session() as session:
+        yield session
 
 
 class Base(DeclarativeBase):
