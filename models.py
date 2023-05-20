@@ -59,3 +59,26 @@ class Restaurant(Abstract, CityAbstract, Base):
     name = Column(String, nullable=False)
     kitchen_type = Column(String, nullable=False)
     mean_price = Column(Float, nullable=False)
+
+
+class Track(Abstract, Base):
+    __tablename__ = 'track'
+    city_id = Column(String, ForeignKey('city.id'))
+    region = Column(String, ForeignKey('reqion.id'))
+    days_count = Column(Integer, nullable=False)
+    description = Column(String, nullable=False)
+    price = Column(Integer, nullable=False)
+
+
+class Region(Abstract, Base):
+    __tablename__ = 'region'
+    title = Column(String, nullable=False)
+    price_hotel = Column(Integer, nullable=False)
+
+
+class Route(Abstract, Base):
+    __tablename__ = 'route'
+    title = Column(String, nullable=False)
+    time = Column(String, nullable=False)
+    is_can_buy = Column(Boolean, nullable=False)
+    region = Column(String, ForeignKey('reqion.id'))
