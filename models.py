@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Column, ForeignKey, Integer, String, Boolean, Float
+    Column, ForeignKey, Integer, String, Boolean, Float, ARRAY
 )
 from sqlalchemy.dialects.postgresql import DATE
 
@@ -63,7 +63,7 @@ class Restaurant(Abstract, CityAbstract, Base):
 
 class Track(Abstract, Base):
     __tablename__ = 'track'
-    city_id = Column(String, ForeignKey('city.id'))
+    city = Column(String, ForeignKey('city.id'))
     region = Column(String, ForeignKey('reqion.id'))
     days_count = Column(Integer, nullable=False)
     description = Column(String, nullable=False)
@@ -82,3 +82,11 @@ class Route(Abstract, Base):
     time = Column(String, nullable=False)
     is_can_buy = Column(Boolean, nullable=False)
     region = Column(String, ForeignKey('reqion.id'))
+
+
+class Hotel(Abstract, Base):
+    __tablename__ = 'hotel'
+    address = title = Column(String, nullable=False)
+    geo_data = Column(ARRAY(Float), nullable=True)
+    city = Column(String, ForeignKey('city.id'))
+    title = Column(String, nullable=False)
