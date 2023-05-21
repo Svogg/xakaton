@@ -1,7 +1,6 @@
 from sqlalchemy import (
-    Column, ForeignKey, Integer, String, Boolean, Float, ARRAY
+    Column, ForeignKey, Integer, String, Float, ARRAY
 )
-from sqlalchemy.dialects.postgresql import DATE
 
 from create_schemas import Base, engine
 
@@ -34,16 +33,11 @@ class City(_GeoAbstract, Base):
     timezone = Column(String, nullable=True)
 
 
-# class Hotel(_GeoAbstract, Base):            в работе
-#     __tablename__ = 'hotel'
-#     address = Column(String, nullable=True)
-
-
 class Event(_Abstract, _EventsAbstract, Base):
     __tablename__ = 'event'
 
 
-class Excursion(_GeoAbstract, _EventsAbstract, Base):
+class Excursion(_Abstract, _EventsAbstract, Base):
     __tablename__ = 'excursion'
 
 
@@ -53,37 +47,46 @@ class Restaurant(_GeoAbstract, _CityAbstract, Base):
     kitchen_type = Column(ARRAY(String), nullable=True)
     mean_price = Column(Float, nullable=True)
     
-class Track(_Abstract, Base):
+class Track(_Abstract, Base, _CityAbstract):
     __tablename__ = 'track'
-    city = Column(String, ForeignKey('city.id'))
-    region = Column(String, ForeignKey('reqion.id'))
-    days_count = Column(Integer, nullable=False)
-    description = Column(String, nullable=False)
-    price = Column(Integer, nullable=False)
+    region = Column(String, ForeignKey('region.id'))
+    days_count = Column(Integer, nullable=True)
+    description = Column(String, nullable=True)
+    price = Column(Integer, nullable=True)
 
 
 class Region(_Abstract, Base):
     __tablename__ = 'region'
-    title = Column(String, nullable=False)
-    price_hotel = Column(Integer, nullable=False)
+    title = Column(String, nullable=True)
+    price_hotel = Column(Integer, nullable=True)
 
 
-class Route(_Abstract, Base):
+class Route(_Abstract, Base, _CityAbstract):
     __tablename__ = 'route'
-    title = Column(String, nullable=False)
-    time = Column(String, nullable=False)
-    is_can_buy = Column(Boolean, nullable=False)
-    region = Column(String, ForeignKey('reqion.id'))
+    title = Column(String, nullable=True)
+    time = Column(String, nullable=True)
 
 
-class Hotel(_Abstract, Base):
+class Hotel(_Abstract, Base, _CityAbstract):
     __tablename__ = 'hotel'
-    address = title = Column(String, nullable=False)
+    address = title = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
-    city = Column(String, ForeignKey('city.id'))
-    title = Column(String, nullable=False)
+    title = Column(String, nullable=True)
 
+
+class UserAnalytics(Base):
+    __tablename__ = 'analytics'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String, ForeignKey('user.id'))
+    key = Column(String, nullable=False)
+    time = Column(Integer, nullable=False)
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(String, primary_key=True)
+    email = Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
 
 
 Base.metadata.create_all(engine)
-
