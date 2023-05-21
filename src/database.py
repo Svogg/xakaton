@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from sqlalchemy import MetaData
+# from sqlalchemy import MetaData
 from sqlalchemy.pool import NullPool
 # from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import async_sessionmaker
@@ -18,7 +18,7 @@ DATABASE_URL = "{}+{}://{}:{}@{}:{}/{}".format(
 
 Base = declarative_base()
 
-metadata = MetaData()
+# metadata = MetaData()
 
 engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
