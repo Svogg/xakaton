@@ -1,7 +1,7 @@
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from config import DATABASE_URL
+from database import DATABASE_URL
 
 metadata = MetaData()
 

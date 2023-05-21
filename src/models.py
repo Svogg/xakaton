@@ -2,7 +2,7 @@ from sqlalchemy import (
     Column, ForeignKey, Integer, String, Float, ARRAY
 )
 
-from create_schemas import Base, engine
+from xakaton.src.create_schemas import Base, engine
 
 
 # class

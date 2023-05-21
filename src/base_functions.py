@@ -5,7 +5,7 @@ from psycopg2 import errors
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import exc
 
-from create_schemas import get_session, Session
+from xakaton.src.create_schemas import get_session, Session
 from models import City, Event, Excursion, Restaurant, Hotel, Region, Route, Track
 
 
@@ -198,6 +198,7 @@ func_list = [
 
 
 start = time()
+
 for func in func_list:
     for session in get_session():
         func[0](func[1], session)
