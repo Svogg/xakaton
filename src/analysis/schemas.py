@@ -1,38 +1,34 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel
 
 from decimal import Decimal
 
 
-class AbstractSchema(object):
+class CitySchema(BaseModel):
     id: str
-
-    class Config:
-        orm_mode = True
-
-
-class CitySchema(AbstractSchema, BaseModel):
     city_name: str
     rating: int
     timezone: str
 
 
-class EventsAbstractSchema(AbstractSchema, object):
+class EventSchema(BaseModel):
+    id: str
     start: datetime
     end: datetime
     price: Decimal
 
 
-class EventSchema(AbstractSchema, EventsAbstractSchema, BaseModel):
-    pass
+class ExcursionSchema(BaseModel):
+    id: str
+    start: datetime
+    end: datetime
+    price: Decimal
 
 
-class ExcursionSchema(AbstractSchema, EventsAbstractSchema, BaseModel):
-    pass
-
-
-class RestaurantSchema(AbstractSchema, BaseModel):
+class RestaurantSchema(BaseModel):
+    id: str
     name: str
-    kitchen_type: str
+    kitchen_type: List[str]
     mean_price: float
