@@ -5,9 +5,6 @@ from sqlalchemy import (
 from src.database import Base, engine
 
 
-# class
-
-
 class _AbstractModel(object):
     id = Column(String, primary_key=True)
 
@@ -88,5 +85,3 @@ class UserModel(Base):
     id = Column(String, primary_key=True)
     email = Column(String, nullable=True)
     phone_number = Column(String, nullable=True)
-
-
