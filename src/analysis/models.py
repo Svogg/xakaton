@@ -68,7 +68,7 @@ class RouteModel(_AbstractModel, Base, _CityAbstractModel):
 
 class HotelModel(_AbstractModel, Base, _CityAbstractModel):
     __tablename__ = 'hotel'
-    address = title = Column(String, nullable=True)
+    address = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
     title = Column(String, nullable=True)
 

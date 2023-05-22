@@ -32,3 +32,30 @@ class RestaurantSchema(BaseModel):
     name: str
     kitchen_type: List[str]
     mean_price: float
+
+
+class HotelSchema(BaseModel):
+    id: str
+    address: str
+    geo_data: List[str]
+    title: str
+
+
+class RouteSchema(BaseModel):
+    id: str
+    title: str
+    time: str
+
+
+class RegionSchema(BaseModel):
+    id: str
+    title: str
+    price_hotel: int
+
+
+class TrackSchema(BaseModel):
+    id: str
+    region: str
+    days_count: int
+    description: str
+    price: int
