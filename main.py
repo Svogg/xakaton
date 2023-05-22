@@ -11,3 +11,4 @@ app.include_router(
     prefix='/analysis',
     tags=['/analysis']
 )
+
