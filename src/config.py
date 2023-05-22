@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv('.env.dev'))
+load_dotenv(find_dotenv('.dbenv'))
+
 
 DB_DRIVER = os.environ.get('DB_DRIVER')
+ASYNC_DB_CONNECTOR = os.environ.get('ASYNC_DB_CONNECTOR')
 DB_CONNECTOR = os.environ.get('DB_CONNECTOR')
 DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASS')

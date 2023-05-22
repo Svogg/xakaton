@@ -1,26 +1,29 @@
 from typing import AsyncGenerator
 
-# from sqlalchemy import MetaData
-from sqlalchemy.pool import NullPool
-# from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
 
-from config import DB_DRIVER, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+from sqlalchemy.ext.asyncio import async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.pool import NullPool
+
+from config import DB_DRIVER, ASYNC_DB_CONNECTOR, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 
 DATABASE_URL = "{}+{}://{}:{}@{}:{}/{}".format(
-    DB_DRIVER, DB_CONNECTOR,
+    DB_DRIVER, ASYNC_DB_CONNECTOR,
     DB_USER, DB_PASS,
     DB_HOST, DB_PORT,
     DB_NAME
 )
 
-Base = declarative_base()
 
-# metadata = MetaData()
+class Base(DeclarativeBase):
+    pass
 
-engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
+
+metadata = MetaData()
+
+engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 

@@ -2,7 +2,7 @@ from sqlalchemy import (
     Column, ForeignKey, Integer, String, Float, ARRAY
 )
 
-from xakaton.src.create_schemas import Base, engine
+from src.database import Base, engine
 
 
 # class
@@ -46,7 +46,8 @@ class Restaurant(_GeoAbstract, _CityAbstract, Base):
     name = Column(String, nullable=True)
     kitchen_type = Column(ARRAY(String), nullable=True)
     mean_price = Column(Float, nullable=True)
-    
+
+
 class Track(_Abstract, Base, _CityAbstract):
     __tablename__ = 'track'
     region = Column(String, ForeignKey('region.id'))
