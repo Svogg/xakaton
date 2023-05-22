@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv('.dbenv'))
+load_dotenv(find_dotenv('.env.dev'))
 
 
 DB_DRIVER = os.environ.get('DB_DRIVER')

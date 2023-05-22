@@ -2,10 +2,10 @@ from sqlalchemy import (
     Column, ForeignKey, Integer, String, Float, ARRAY
 )
 
-from src.database import Base, engine
+from ..database import Base, engine
 
 
-# class
+import asyncio
 
 
 class _Abstract(object):
@@ -90,4 +90,11 @@ class User(Base):
     phone_number = Column(String, nullable=True)
 
 
-Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)
+
+async def init_models():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+asyncio.run(init_models())

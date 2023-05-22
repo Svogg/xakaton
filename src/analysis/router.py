@@ -8,13 +8,12 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_async_session
-from models import City, Event, Excursion, Restaurant, Hotel, Region, Route, Track
+from ..database import get_async_session
+from .models import City, Event, Excursion, Restaurant, Hotel, Region, Route, Track
 
 router = APIRouter()
 
 
-@router.post('/add_city')
 async def add_city(city: City, current_session: AsyncSession = Depends(get_async_session)):
     async with open('17_dataset/cities.json', 'r', encoding='utf-8') as cities:
         data_cities = await json.load(cities)

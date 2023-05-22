@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from analysis.routes import router as router_analysis
+from src.analysis.router import router as router_analysis
 
 app = FastAPI(
     titel='Russpass recommendation service'

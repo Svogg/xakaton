@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.pool import NullPool
 
-from config import DB_DRIVER, ASYNC_DB_CONNECTOR, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+from .config import DB_DRIVER, ASYNC_DB_CONNECTOR, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 
 DATABASE_URL = "{}+{}://{}:{}@{}:{}/{}".format(
     DB_DRIVER, ASYNC_DB_CONNECTOR,
