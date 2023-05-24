@@ -17,6 +17,7 @@ class EventSchema(BaseModel):
     id: str
     start: datetime
     end: datetime
+    duration: str
     price: Decimal
 
 
@@ -24,6 +25,7 @@ class ExcursionSchema(BaseModel):
     id: str
     start: datetime
     end: datetime
+    duration: str
     price: Decimal
 
 
@@ -37,18 +39,16 @@ class RestaurantSchema(BaseModel):
 class HotelSchema(BaseModel):
     id: str
     address: str
+    stars: str
     geo_data: List[str]
     title: str
-
-
+    list_services: List[str]
 
 
 class RegionSchema(BaseModel):
     id: str
     title: str
     price_hotel: int
-
-
 
 
 class AirPlaneTicketSchema(BaseModel):
@@ -78,4 +78,3 @@ class UserAnalyticsSchema(BaseModel):
     target_restaurant: str
     target_excursion: str
     bought: bool
-

@@ -18,6 +18,7 @@ class _GeoAbstractModel(_AbstractModel):
 class _EventsAbstractModel(_CityAbstractModel):
     start = Column(String, nullable=False)
     end = Column(String, nullable=False)
+    duration = Column(String, nullable=False)
     price = Column(Float, nullable=True)
 
 
@@ -61,8 +62,10 @@ class RegionModel(_AbstractModel, Base):
 class HotelModel(_AbstractModel, Base, _CityAbstractModel):
     __tablename__ = 'hotel'
     address = Column(String, nullable=True)
+    stars = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
     title = Column(String, nullable=True)
+    list_services = Column(ARRAY(String), nullable=True)
 
 
 class UserModel(_AbstractModel, Base):
@@ -84,4 +87,3 @@ class UserAnalyticsModel(Base):
     target_restaurant = Column(String, ForeignKey('restaurant.id'), nullable=True)
     target_excursion = Column(String, ForeignKey('excursion.id'), nullable=True)
     bought = Column(Boolean, nullable=False)
-
