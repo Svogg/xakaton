@@ -1,4 +1,5 @@
-src/.env.dev
+src/.dbenv
 __pycache__/
-dbinit.py
+.idea
+xakaton-env
 
