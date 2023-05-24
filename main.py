@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from src.routers import city, event, excursion, hotel, region, restaurant, route, track
+from src.analysis.routers import event
+from src.analysis.routers import region, hotel, excursion, city, restaurant
 
 app = FastAPI(
     titel='Russpass recommendation service'
@@ -12,6 +13,5 @@ app.include_router(excursion.router)
 app.include_router(hotel.router)
 app.include_router(region.router)
 app.include_router(restaurant.router)
-app.include_router(route.router)
-app.include_router(track.router)
+
 

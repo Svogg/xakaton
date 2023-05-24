@@ -41,10 +41,6 @@ class HotelSchema(BaseModel):
     title: str
 
 
-class RouteSchema(BaseModel):
-    id: str
-    title: str
-    time: str
 
 
 class RegionSchema(BaseModel):
@@ -53,9 +49,33 @@ class RegionSchema(BaseModel):
     price_hotel: int
 
 
-class TrackSchema(BaseModel):
+
+
+class AirPlaneTicketSchema(BaseModel):
+    city_id: str
+    target_city: str
+    flight_start: datetime
+    flight_end: datetime
+    flight_price: float
+    airline_name: str
+
+
+class UserSchema(BaseModel):
     id: str
-    region: str
-    days_count: int
-    description: str
-    price: int
+    email: str
+    phone_number: str
+
+
+class UserAnalyticsSchema(BaseModel):
+    session: int
+    user_id: str
+    target_region: str
+    current_city: str
+    target_city: str
+    airplane_ticket_to: str
+    airplane_ticket_back: str
+    target_hotel: str
+    target_restaurant: str
+    target_excursion: str
+    bought: bool
+
