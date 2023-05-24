@@ -13,9 +13,7 @@ DATABASE_URL = "{}+{}://{}:{}@{}:{}/{}".format(
     DB_NAME
 )
 
-
 Base = declarative_base()
-
 
 metadata = MetaData()
 
