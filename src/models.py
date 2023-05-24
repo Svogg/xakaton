@@ -1,9 +1,5 @@
-from sqlalchemy import (
-    Column, ForeignKey, Integer, String, Float, ARRAY
-)
-
-from ..database import Base, engine
-
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY
+from xakaton.src.database import Base
 
 
 class _AbstractModel(object):
