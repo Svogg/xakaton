@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from xakaton.src.models import EventModel
-from xakaton.src.database import get_async_session
+from src.analysis.models import EventModel
+from src.database import get_async_session
 
 router = APIRouter()
 
