@@ -75,7 +75,7 @@ class UserModel(_AbstractModel, Base):
 
 
 class UserAnalyticsModel(Base):
-    __tablename__ = 'analytics'
+    __tablename__ = 'services'
     session = Column(Integer, primary_key=True)
     user_id = Column(String, ForeignKey('user.id'), nullable=True)
     target_region = Column(String, ForeignKey('region.id'), nullable=True)
@@ -86,4 +86,11 @@ class UserAnalyticsModel(Base):
     target_hotel = Column(String, ForeignKey('hotel.id'), nullable=True)
     target_restaurant = Column(String, ForeignKey('restaurant.id'), nullable=True)
     target_excursion = Column(String, ForeignKey('excursion.id'), nullable=True)
-    bought = Column(Boolean, nullable=False)
+    bought = Column(Integer, nullable=False)
+
+
+class DataForMl(Base):
+    __tablename__ = 'mldata'
+    item_id = Column(String, nullable=True)
+    user_id = Column(String, nullable=True)
+    bought = Column(Integer, nullable=False)

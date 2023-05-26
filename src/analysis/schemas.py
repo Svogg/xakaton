@@ -77,4 +77,10 @@ class UserAnalyticsSchema(BaseModel):
     target_hotel: str
     target_restaurant: str
     target_excursion: str
-    bought: bool
+    bought: int
+
+
+class DataForMl(BaseModel):
+    item_id: str
+    user_id: str
+    bought: int
