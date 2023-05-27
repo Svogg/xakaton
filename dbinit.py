@@ -7,8 +7,10 @@ from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
-from src.analysis.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel
-from src.analysis.schemas import CitySchema, EventSchema, ExcursionSchema, RestaurantSchema, HotelSchema, RegionSchema
+from src.analysis.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel,\
+    DataMlModel
+from src.analysis.schemas import CitySchema, EventSchema, ExcursionSchema, RestaurantSchema, HotelSchema, \
+    RegionSchema, DataMlSchema
 
 
 # @router.post('/add_city')
@@ -44,7 +46,8 @@ async def add_event(event: EventSchema, current_session: AsyncSession = Depends(
                                 'city') else 'null'),
                             start=i.get('dictionary_data').get('schedule')[0].get('start').get('$date'),
                             end=i.get('dictionary_data').get('schedule')[0].get('end').get('$date'),
-                            price=i.get('dictionary_data').get('ticket_price')
+                            price=i.get('dictionary_data').get('ticket_price'),
+                            bought_count=0
                         )).on_conflict_do_nothing()
                     else:
                         stmt = insert(event).values(
@@ -52,7 +55,8 @@ async def add_event(event: EventSchema, current_session: AsyncSession = Depends(
                             city_id=i.get('dictionary_data').get('city'),
                             start=i.get('dictionary_data').get('schedule')[0].get('start'),
                             end=i.get('dictionary_data').get('schedule')[0].get('end'),
-                            price=i.get('dictionary_data').get('ticket_price')
+                            price=i.get('dictionary_data').get('ticket_price'),
+                            bought_count=0
                         ).on_conflict_do_nothing()
                     await current_session.execute(stmt)
                     await current_session.commit()
@@ -73,7 +77,8 @@ async def add_excursion(excursion: ExcursionSchema, current_session: AsyncSessio
                         city_id=i.get('dictionary_data').get('city'),
                         start=i.get('dictionary_data').get('season_start'),
                         end=i.get('dictionary_data').get('season_end'),
-                        price=i.get('dictionary_data').get('price')
+                        price=i.get('dictionary_data').get('price'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 else:
                     stmt = insert(excursion).values(ExcursionModel(
@@ -81,7 +86,8 @@ async def add_excursion(excursion: ExcursionSchema, current_session: AsyncSessio
                         city_id=i.get('dictionary_data').get('city'),
                         start=i.get('dictionary_data').get('season_start').get('$date'),
                         end=i.get('dictionary_data').get('season_end').get('$date'),
-                        price=i.get('dictionary_data').get('price')
+                        price=i.get('dictionary_data').get('price'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
@@ -101,7 +107,8 @@ async def add_hotel(hotel: HotelSchema, current_session: AsyncSession = Depends(
                     address=i.get('dictionary_data').get('address'),
                     geo_data=i.get('dictionary_data').get('geo_data').get('coordinates'),
                     city_id=i.get('dictionary_data').get('city'),
-                    title=i.get('dictionary_data').get('title')
+                    title=i.get('dictionary_data').get('title'),
+                    bought_count=0
                 )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
@@ -143,10 +150,44 @@ async def add_restaurant(restaurant: RestaurantSchema, current_session: AsyncSes
                         ).get('geo_data').get('coordinates'),
                         name=i.get('dictionary_data').get('title'),
                         kitchen_type=i.get('dictionary_data').get('cuisines'),
-                        mean_price=i.get('dictionary_data').get('bill')
+                        mean_price=i.get('dictionary_data').get('bill'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
             except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
                 continue
         print('restaurants_added')
+
+
+async def add_item(item: DataMlModel, current_session: AsyncSession = Depends(get_async_session)):
+    import random
+    files = ['17_dataset/excursions.json', '17_dataset/events.json',
+             '17_dataset/hotels.json', '17_dataset/restaurants.json']
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            for i in data:
+                try:
+                    stmt = insert(item).values(
+                        item_id=i.get('_id').get('$oid'),
+                        user_id=None,
+                        bought=0
+                    ).on_conflict_do_nothing()
+                    await current_session.execute(stmt)
+                except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+                    continue
+            await current_session.commit()
+    print('items_added')
+
+
+async def start():
+    async for session in get_async_session():
+        await add_item(DataMlModel, session)
+
+def main():
+    import asyncio
+    asyncio.run(start())
+
+
+main()

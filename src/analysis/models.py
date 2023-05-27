@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean
 
-from src.database import Base
+from ..database import Base
 
 
 class _AbstractModel(object):
@@ -15,10 +15,14 @@ class _GeoAbstractModel(_AbstractModel):
     geo_data = Column(ARRAY(Float), nullable=True)
 
 
-class _EventsAbstractModel(_CityAbstractModel):
-    start = Column(String, nullable=False)
-    end = Column(String, nullable=False)
-    duration = Column(String, nullable=False)
+class _BoughtAbstractModel(object):
+    bought_count = Column(Integer, nullable=True)
+
+
+class _EventsAbstractModel(_CityAbstractModel, _BoughtAbstractModel):
+    start = Column(String, nullable=True)
+    end = Column(String, nullable=True)
+    duration = Column(String, nullable=True)
     price = Column(Float, nullable=True)
 
 
@@ -42,11 +46,11 @@ class EventModel(_AbstractModel, _EventsAbstractModel, Base):
     __tablename__ = 'event'
 
 
-class ExcursionModel(_AbstractModel, _EventsAbstractModel, Base):
+class ExcursionModel(_AbstractModel, _EventsAbstractModel, _BoughtAbstractModel, Base):
     __tablename__ = 'excursion'
 
 
-class RestaurantModel(_GeoAbstractModel, _CityAbstractModel, Base):
+class RestaurantModel(_GeoAbstractModel, _CityAbstractModel, _BoughtAbstractModel, Base):
     __tablename__ = 'restaurant'
     name = Column(String, nullable=True)
     kitchen_type = Column(ARRAY(String), nullable=True)
@@ -59,7 +63,7 @@ class RegionModel(_AbstractModel, Base):
     price_hotel = Column(Integer, nullable=True)
 
 
-class HotelModel(_AbstractModel, Base, _CityAbstractModel):
+class HotelModel(_AbstractModel, Base, _CityAbstractModel, _BoughtAbstractModel):
     __tablename__ = 'hotel'
     address = Column(String, nullable=True)
     stars = Column(String, nullable=True)
@@ -87,3 +91,11 @@ class UserAnalyticsModel(Base):
     target_restaurant = Column(String, ForeignKey('restaurant.id'), nullable=True)
     target_excursion = Column(String, ForeignKey('excursion.id'), nullable=True)
     bought = Column(Boolean, nullable=False)
+
+
+class DataMlModel(Base):
+    __tablename__ = 'mldata'
+    pk = Column(Integer, primary_key=True, autoincrement=True)
+    item_id = Column(String, nullable=True)
+    user_id = Column(String, nullable=True)
+    bought = Column(Integer, nullable=False)
