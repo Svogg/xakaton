@@ -1,4 +1,3 @@
-
 import json
 from fastapi import Depends
 
@@ -8,8 +7,10 @@ from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
-from xakaton.src.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel, RouteModel, TrackModel
-from xakaton.src.schemas import CitySchema, EventSchema, ExcursionSchema, RestaurantSchema, HotelSchema, RegionSchema, RouteSchema, TrackSchema
+from src.analysis.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel,\
+    DataMlModel
+from src.analysis.schemas import CitySchema, EventSchema, ExcursionSchema, RestaurantSchema, HotelSchema, \
+    RegionSchema, DataMlSchema
 
 
 # @router.post('/add_city')
@@ -31,28 +32,6 @@ async def add_city(city: CitySchema, current_session: AsyncSession = Depends(get
                 continue
 
 
-
-# @router.post('/add_track')
-async def add_track(track: TrackSchema, current_session: AsyncSession = Depends(get_async_session)):
-    async with open('17_dataset/tracks.json', 'r', encoding='utf-8') as tracks:
-        data_tracks = await json.load(tracks)
-        for i in data_tracks:
-            try:
-                stmt = insert(track).values(TrackModel(
-                    id=i.get('_id').get('$oid'),
-                    city_id=i.get('dictionary_data').get('city'),
-                    region=i.get('dictionary_data').get('region'),
-                    days_count=i.get('dictionary_data').get('days_count'),
-                    description=i.get('dictionary_data').get('description'),
-                    price=i.get('dictionary_data').get('price')
-                )).on_conflict_do_nothing()
-                await current_session.execute(stmt)
-                await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
-                continue
-        print('tracks_added')
-
-
 # @router.post('/add_event')
 async def add_event(event: EventSchema, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/events.json', 'r', encoding='utf-8') as events:
@@ -67,7 +46,8 @@ async def add_event(event: EventSchema, current_session: AsyncSession = Depends(
                                 'city') else 'null'),
                             start=i.get('dictionary_data').get('schedule')[0].get('start').get('$date'),
                             end=i.get('dictionary_data').get('schedule')[0].get('end').get('$date'),
-                            price=i.get('dictionary_data').get('ticket_price')
+                            price=i.get('dictionary_data').get('ticket_price'),
+                            bought_count=0
                         )).on_conflict_do_nothing()
                     else:
                         stmt = insert(event).values(
@@ -75,7 +55,8 @@ async def add_event(event: EventSchema, current_session: AsyncSession = Depends(
                             city_id=i.get('dictionary_data').get('city'),
                             start=i.get('dictionary_data').get('schedule')[0].get('start'),
                             end=i.get('dictionary_data').get('schedule')[0].get('end'),
-                            price=i.get('dictionary_data').get('ticket_price')
+                            price=i.get('dictionary_data').get('ticket_price'),
+                            bought_count=0
                         ).on_conflict_do_nothing()
                     await current_session.execute(stmt)
                     await current_session.commit()
@@ -96,7 +77,8 @@ async def add_excursion(excursion: ExcursionSchema, current_session: AsyncSessio
                         city_id=i.get('dictionary_data').get('city'),
                         start=i.get('dictionary_data').get('season_start'),
                         end=i.get('dictionary_data').get('season_end'),
-                        price=i.get('dictionary_data').get('price')
+                        price=i.get('dictionary_data').get('price'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 else:
                     stmt = insert(excursion).values(ExcursionModel(
@@ -104,7 +86,8 @@ async def add_excursion(excursion: ExcursionSchema, current_session: AsyncSessio
                         city_id=i.get('dictionary_data').get('city'),
                         start=i.get('dictionary_data').get('season_start').get('$date'),
                         end=i.get('dictionary_data').get('season_end').get('$date'),
-                        price=i.get('dictionary_data').get('price')
+                        price=i.get('dictionary_data').get('price'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
@@ -124,7 +107,8 @@ async def add_hotel(hotel: HotelSchema, current_session: AsyncSession = Depends(
                     address=i.get('dictionary_data').get('address'),
                     geo_data=i.get('dictionary_data').get('geo_data').get('coordinates'),
                     city_id=i.get('dictionary_data').get('city'),
-                    title=i.get('dictionary_data').get('title')
+                    title=i.get('dictionary_data').get('title'),
+                    bought_count=0
                 )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
@@ -151,25 +135,6 @@ async def add_region(region: RegionSchema, current_session: AsyncSession = Depen
         print('regions_added')
 
 
-# @router.post('/add_route')
-async def add_route(route: RouteSchema, current_session: AsyncSession = Depends(get_async_session)):
-    async with open('17_dataset/routes.json', 'r', encoding='utf-8') as routes:
-        data_routes = await json.load(routes)
-        for i in data_routes:
-            try:
-                stmt = insert(route).values(RouteModel(
-                    id=i.get('_id').get('$oid'),
-                    title=i.get('dictionary_data').get('title'),
-                    time=i.get('dictionary_data').get('time'),
-                    city_id=i.get('dictionary_data').get('city')
-                )).on_conflict_do_nothing()
-                await current_session.execute(stmt)
-                await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
-                continue
-        print('routes_added')
-
-
 # @router.post('/add_restaurant')
 async def add_restaurant(restaurant: RestaurantSchema, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/restaurants.json', 'r', encoding='utf-8') as restaurants:
@@ -185,10 +150,44 @@ async def add_restaurant(restaurant: RestaurantSchema, current_session: AsyncSes
                         ).get('geo_data').get('coordinates'),
                         name=i.get('dictionary_data').get('title'),
                         kitchen_type=i.get('dictionary_data').get('cuisines'),
-                        mean_price=i.get('dictionary_data').get('bill')
+                        mean_price=i.get('dictionary_data').get('bill'),
+                        bought_count=0
                     )).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
             except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
                 continue
         print('restaurants_added')
+
+
+async def add_item(item: DataMlModel, current_session: AsyncSession = Depends(get_async_session)):
+    import random
+    files = ['17_dataset/excursions.json', '17_dataset/events.json',
+             '17_dataset/hotels.json', '17_dataset/restaurants.json']
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            for i in data:
+                try:
+                    stmt = insert(item).values(
+                        item_id=i.get('_id').get('$oid'),
+                        user_id=None,
+                        bought=0
+                    ).on_conflict_do_nothing()
+                    await current_session.execute(stmt)
+                except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+                    continue
+            await current_session.commit()
+    print('items_added')
+
+
+async def start():
+    async for session in get_async_session():
+        await add_item(DataMlModel, session)
+
+def main():
+    import asyncio
+    asyncio.run(start())
+
+
+main()

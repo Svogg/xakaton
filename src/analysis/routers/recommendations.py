@@ -12,5 +12,8 @@ router = APIRouter()
 async def get_recommendations(id, session: AsyncSession = Depends(get_async_session)):
     """параметр id принадлежит авторизованному пользователю"""
     recommends = await recommend_event(id)  # список id рекомендуемых объектов
+    for item in recommends:
+        """select экскурсий, отелей, ивентов, ресторанов по их id в соответствующих им таблицах"""
+        ...
     result = 0
     return result.scalars().all()

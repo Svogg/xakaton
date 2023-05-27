@@ -1,6 +1,5 @@
-from sqlalchemy import select
 import pandas as pd
-from src.database import engine
+from xakaton.src.database import engine
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
@@ -20,8 +19,3 @@ def recommend_event(user_id, recommendations=5):
     indices_distances = list(zip(indices, distances))
     result = sorted(indices_distances, key=lambda x: x[1], reverse=False)[1:]
     return [i[0] for i in result]
-
-
-
-
-
