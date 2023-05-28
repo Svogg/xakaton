@@ -1,4 +1,7 @@
 # hakaton
+Рекомендательный сервис
+
+![alt text](https://github.com//Svogg/xakaton/blob/master/frontend/src/assets/preview.png?raw=true)
 
 ## Project setup
 ```

@@ -6,6 +6,7 @@ import mutations from './mutations.js'
 import getters from './getters.js'
 import user from './modules/user/index.js'
 import reference from './modules/reference/index.js'
+import auth from './modules/auth/index.js'
 
 Vue.use(Vuex);
 
@@ -17,9 +18,8 @@ const store = new Vuex.Store({
     modules: {
         user,
         reference,
+        auth
     },
 });
-
-store.$app = {}
 
 export default store

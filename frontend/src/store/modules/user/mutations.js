@@ -1,10 +1,4 @@
 export default {
-    setUserInfo: (state, data) => {
-        state.user = data
-    },
-    setUserCiti: (state, citi) => {
-        state.user.citi = citi
-    },
     toggleChoiceCategoryActive(state, key){
         const category = state.choice.category[key]
         category.active = !category.active
