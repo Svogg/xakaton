@@ -6,10 +6,10 @@ const httpServicePlugin = {
     Vue.prototype.$setupAxios = function () {
       this.$axios.defaults.baseURL = process.env.VUE_APP_BASE
       this.$axios.defaults.headers['Content-Type'] = 'application/json'
-      // this.$axios.interceptors.request.use(req => {
-      //   req.headers['Authorization'] = `Bearer ${accessToken}`
-      //   return req;
-      // });
+      const token = localStorage.getItem('token')
+      if(token) {
+        Vue.prototype.$axios.defaults.headers.common['Authorization'] = token
+      }
     }
   }
 };

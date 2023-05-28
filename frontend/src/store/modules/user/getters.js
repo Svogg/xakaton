@@ -1,7 +1,4 @@
 export default {
-    getUser: state => {
-        return state.user
-    },
     getChoiceCategories: state => {
         return state.choice.category
     },
