@@ -18,7 +18,9 @@ class EventSchema(BaseModel):
     start: datetime
     end: datetime
     duration: str
-    price: Decimal
+    price: float
+    bought_count: int
+
 
 
 class ExcursionSchema(BaseModel):
@@ -27,6 +29,7 @@ class ExcursionSchema(BaseModel):
     end: datetime
     duration: str
     price: Decimal
+    bought_count: int
 
 
 class RestaurantSchema(BaseModel):
@@ -34,6 +37,7 @@ class RestaurantSchema(BaseModel):
     name: str
     kitchen_type: List[str]
     mean_price: float
+    bought_count: int
 
 
 class HotelSchema(BaseModel):
@@ -43,6 +47,8 @@ class HotelSchema(BaseModel):
     geo_data: List[str]
     title: str
     list_services: List[str]
+    bought_count: int
+
 
 
 class RegionSchema(BaseModel):
@@ -77,4 +83,11 @@ class UserAnalyticsSchema(BaseModel):
     target_hotel: str
     target_restaurant: str
     target_excursion: str
-    bought: bool
+    bought: int
+
+
+class DataMlSchema(BaseModel):
+    item_id: str
+    user_id: str
+    bought: int
+
