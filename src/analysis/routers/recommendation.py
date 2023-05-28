@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.analysis.services.analytics import recommend_event
+from src.services.analytics import recommend_event
 from xakaton.src.database import get_async_session
 from src.analysis.models import HotelModel, RestaurantModel, ExcursionModel, EventModel
+from src.analysis.schemas import DataMlSchema
 
 router = APIRouter()
 
@@ -23,3 +24,12 @@ async def get_recommendations(user_id, session: AsyncSession = Depends(get_async
         if ans:
             res.append(ans)
     return [i for i in res]
+
+
+@router.post('/add_to_favour/{user_id}')
+async def add_to_favour(item_id, user_id, session: AsyncSession = Depends(get_async_session)):
+    stmt = insert(DataMlSchema).values(item_id=item_id, user_id=user_id, bought=1)
+    await session.execute(stmt)
+    return {
+        'status': 'success'
+    }
