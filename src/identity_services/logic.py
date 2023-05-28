@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import HTTPException, Depends
 from fastapi import status
@@ -13,7 +13,13 @@ from src.database import get_async_session
 from src.identity_services.models import UserModel
 from src.identity_services.schemas import TokenDataSchema, UserInDB
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token",)
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/auth/token",
+    scopes={
+
+        "items": "Read items."
+    },
+)
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -21,35 +27,59 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-async def get_user(username: str, session: AsyncSession = Depends(get_async_session)):
-    stmt = select(UserModel).filter_by(username=username)
-    result = await session.execute(stmt)
-    result_dict = result.scalars().all()[0].__dict__
-    if result_dict:
-        user_dict = {
+async def get_user(
+        username: str,
+        password: str = None,
+        token_data: str = None,
+        session: AsyncSession = Depends(get_async_session)
+):
+    if not token_data:
+        stmt = select(UserModel).filter_by(username=username)
+        result = await session.execute(stmt)
+        result_dict = result.scalars().all()[0].__dict__
+        if result_dict:
+            user_dict = {
 
-            'username': result_dict.get('username'),
-            'email': result_dict.get('email'),
-            'disabled': result_dict.get('disabled'),
-            'hashed_password': result_dict.get('hashed_password'),
-        }
+                'username': result_dict.get('username'),
+                'email': result_dict.get('email'),
+                'disabled': result_dict.get('disabled'),
+                'hashed_password': result_dict.get('hashed_password'),
+            }
 
-        return UserInDB(**user_dict)
+            return UserInDB(**user_dict)
+    else:
+        stmt = select(UserModel).filter_by(username=token_data)
+        result = await session.execute(stmt)
+        result_dict = result.scalars().all()[0].__dict__
+        if result_dict:
+            user_dict = {
+
+                'username': result_dict.get('username'),
+                'email': result_dict.get('email'),
+                'disabled': result_dict.get('disabled'),
+                'hashed_password': result_dict.get('hashed_password'),
+            }
+
+            return UserInDB(**user_dict)
 
 
-def verify_password(plain_password, hashed_password):
+async def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
+async def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-async def authenticate_user(username: str, password: str, session: AsyncSession = Depends(get_async_session)):
-    user = await get_user(username, session)
+async def authenticate_user(
+        username: str,
+        password: str,
+        token: str = None,
+        session: AsyncSession = Depends(get_async_session)):
+    user = await get_user(username=username, token_data=token, session=session)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not await verify_password(password, user.hashed_password):
         return False
     return user
 
@@ -67,7 +97,10 @@ async def create_access_token(data: dict, expires_delta: timedelta | None = None
 
 async def get_current_user(
         security_scopes: SecurityScopes,
-        token: Annotated[str, Depends(oauth2_scheme)]):
+        token: Annotated[str, Depends(oauth2_scheme)],
+        session: AsyncSession = Depends(get_async_session)
+):
+    print(f'Bearer scope="{security_scopes.scope_str}"')
     if security_scopes.scopes:
         authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
     else:
@@ -85,10 +118,14 @@ async def get_current_user(
         token_data = TokenDataSchema(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user(username=username, session=token_data.username)
+    user = await get_user(username=username, token_data=token_data.toke_username, session=session)
+    print('get_current_user user: {}'.format(user))
     if user is None:
         raise credentials_exception
+    print('get_current_user security_scopes.scopes: {}'.format(security_scopes.scopes))
+    print('get_current_user security_scopes: {}'.format(security_scopes))
     for scope in security_scopes.scopes:
+        print('get_current_user token_data.scopes: {}'.format(token_data.scopes))
         if scope not in token_data.scopes:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
