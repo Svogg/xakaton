@@ -71,11 +71,13 @@ class HotelModel(Base):
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'), nullable=True)
     address = Column(String, nullable=True)
+    stars = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
     stars = Column(String, nullable=True)
     title = Column(String, nullable=True)
     list_services = Column(ARRAY(String), nullable=True)
     bought_count = Column(Integer, nullable=True)
+
 
 
 class DBUserModel(UserModel):
