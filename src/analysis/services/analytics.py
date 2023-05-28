@@ -1,5 +1,5 @@
 import pandas as pd
-from xakaton.src.database import engine
+from src.database import engine
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 

@@ -18,7 +18,7 @@ class EventSchema(BaseModel):
     start: datetime
     end: datetime
     duration: str
-    price: Decimal
+    price: float
     bought_count: int
 
 
