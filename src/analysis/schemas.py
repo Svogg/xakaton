@@ -88,6 +88,6 @@ class UserAnalyticsSchema(BaseModel):
 
 class DataMlSchema(BaseModel):
     item_id: str
-    user_id: str
+    username: str
     bought: int
 

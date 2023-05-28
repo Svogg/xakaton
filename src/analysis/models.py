@@ -103,5 +103,5 @@ class DataMlModel(Base):
     __tablename__ = 'mldata'
     id = Column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(String, nullable=True)
-    user_id = Column(String, nullable=True)
+    username = Column(String, nullable=True)
     bought = Column(Integer, nullable=False)
