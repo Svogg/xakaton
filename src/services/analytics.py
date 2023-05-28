@@ -1,25 +1,41 @@
+from typing import Annotated
+
 import pandas as pd
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
-from xakaton.src.database import get_async_session
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
-from sqlalchemy import select
+
+from src.identity_services.logic import get_current_active_user
+from src.identity_services.schemas import UserInDB
 
 
-async def recommend_event(username, session: AsyncSession = Depends(get_async_session), recommendations=10):
-    items = pd.read_sql_query('SELECT * from mldata;', con=session)
-    print(items)
-    user_matrix = items.pivot(index='item_id',
-                              columns='username',
-                              values='bought').fillna(0, inplace=True)
+async def recommend_event(
+        list_dict: list,
+        username: str,
+        item_id,
+        recommendations=10
+):
+    items = pd.DataFrame(list_dict)
+    user_matrix = pd.pivot_table(
+        items,
+        index=['item_id'],
+        columns=['username'],
+        values=['bought']
+    ).fillna(0)
     user_data = csr_matrix(user_matrix.values)
-    user_item_matrix = user_matrix.rename_axis(None, axis=1).reset_index()
+    user_item_matrix = user_matrix.rename_axis(None, axis=0).reset_index()
     ml_model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=20, n_jobs=-1)
     ml_model.fit(user_data)
-    username = user_item_matrix[user_item_matrix['username'] == username].index[0]
-    distances, indices = ml_model.kneighbors(user_data[username],
-                                             n_neighbors=recommendations + 1).squeeze().tolist()
-    indices_distances = list(zip(indices, distances))
-    result = sorted(indices_distances, key=lambda x: x[1], reverse=False)[1:]
-    return [i[0] for i in result]
+    print(user_matrix)
+    print()
+    print(user_item_matrix)
+    username = user_item_matrix[user_item_matrix['index'] == item_id].index[0]
+    indices = ml_model.kneighbors(
+        user_data[username],
+        n_neighbors=3
+    )[1][0]
+
+    # indices_distances = list(zip(indices, distances))
+    # print(indices_distances)
+    # result = sorted(indices_distances, key=lambda x: x[1], reverse=False)[1:]
+    return indices

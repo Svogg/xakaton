@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from src.analysis.routers import region, hotel, excursion, city, restaurant, event, recommendation
-from src.identity_services.registration.router import router as router_registration
-from src.identity_services.auth.router import router as auth_router
-from fastapi import FastAPI
-from src.analysis.routers import event
-from src.analysis.routers import region, hotel, excursion, city, restaurant
 from fastapi.middleware.cors import CORSMiddleware
+
+from src.analysis.routers import event
+from src.analysis.routers import recommendation
+from src.analysis.routers import region, hotel, excursion, city, restaurant
+from src.identity_services.auth.router import router as auth_router
+from src.identity_services.registration.router import router as router_registration
 
 app = FastAPI(
     titel='Russpass recommendation service'

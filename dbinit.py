@@ -10,12 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.analysis.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel, \
     DataMlModel
-from src.analysis.schemas import CitySchema, EventSchema, ExcursionSchema, RestaurantSchema, HotelSchema, \
-    RegionSchema
 from src.database import get_async_session
 
 
-# @router.post('/add_city')
+
 async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/cities.json', 'r', encoding='utf-8') as cities:
         data_cities = json.load(cities)
@@ -35,7 +33,7 @@ async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_
     print('cities added')
 
 
-# @router.post('/add_event')
+
 async def add_event(event: EventModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/events.json', 'r', encoding='utf-8') as events:
         data_events = json.load(events)
@@ -85,7 +83,7 @@ async def add_event(event: EventModel, current_session: AsyncSession = Depends(g
     print('events_added')
 
 
-# @router.post('/add_excursion')
+
 async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/excursions.json', 'r', encoding='utf-8') as excursions:
         data_excursions = json.load(excursions)
@@ -122,7 +120,7 @@ async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession
     print('excursions_added')
 
 
-# @router.post('/add_hotel')
+
 async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/hotels.json', 'r', encoding='utf-8') as hotels:
         data_hotels = json.load(hotels)
@@ -143,7 +141,7 @@ async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(g
     print('hotels_added')
 
 
-# @router.post('/add_region')
+
 async def add_region(region: RegionModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/regions.json', 'r', encoding='utf-8') as regions:
         data_regions = json.load(regions)
@@ -161,7 +159,6 @@ async def add_region(region: RegionModel, current_session: AsyncSession = Depend
     print('regions_added')
 
 
-# @router.post('/add_restaurant')
 async def add_restaurant(restaurant: RestaurantModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/restaurants.json', 'r', encoding='utf-8') as restaurants:
         data_restaurants = json.load(restaurants)

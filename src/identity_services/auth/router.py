@@ -2,14 +2,13 @@ from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi import Depends, HTTPException, status, Security
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
-from src.identity_services.logic import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, \
-    get_current_active_user
-from src.identity_services.schemas import TokenSchema, UserInDB
+from src.identity_services.logic import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
+from src.identity_services.schemas import TokenSchema
 
 router = APIRouter()
 

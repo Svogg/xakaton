@@ -79,7 +79,6 @@ class HotelModel(Base):
     bought_count = Column(Integer, nullable=True)
 
 
-
 class DBUserModel(UserModel):
     ...
 
@@ -87,7 +86,7 @@ class DBUserModel(UserModel):
 class UserAnalyticsModel(Base):
     __tablename__ = 'analytics'
     session = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
     target_region = Column(String, ForeignKey('region.id'), nullable=True)
     current_city = Column(String, ForeignKey('city.id'), nullable=True)
     target_city = Column(String, ForeignKey('city.id'), nullable=True)
