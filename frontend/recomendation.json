@@ -1,0 +1,86 @@
+[
+  {
+    "airline": {
+      "title": "Аэрофлот",
+      "price": "2 800₽",
+      "citiFrom": "Абакан",
+      "timeFrom": "08:55",
+      "dateFrom": "9 июн, пт",
+      "dateTo": "9 июн, пт",
+      "citiTo": "Москва",
+      "timeTo": "12:30",
+      "duration": "3ч 35мин",
+      "baggage": false
+    },
+    "hotel": {
+      "title": "Измайлово Гамма",
+      "address": "Измайловское шоссе 71, корпус 4 Г, Москва",
+      "distance": "9,3 км от центра",
+      "rating": 5,
+      "rooms": "Двухместный",
+      "price": "22 850₽"
+    },
+    "moreText": "Еще 2 ресторана и 3 мероприятия"
+  },
+  {
+    "airline": {
+      "title": "Аэрофлот",
+      "price": "2 800₽",
+      "citiFrom": "Абакан",
+      "timeFrom": "08:55",
+      "dateFrom": "9 июн, пт",
+      "dateTo": "9 июн, пт",
+      "citiTo": "Москва",
+      "timeTo": "12:30",
+      "duration": "3ч 35мин",
+      "baggage": false
+    },
+    "airlineBack": {
+      "title": "Аэрофлот",
+      "price": "2 900₽",
+      "citiFrom": "Москва",
+      "timeFrom": "08:55",
+      "dateFrom": "16 июн, пт",
+      "dateTo": "16 июн, пт",
+      "citiTo": "Абакан",
+      "timeTo": "12:30",
+      "duration": "3ч 40мин",
+      "baggage": false
+    },
+    "hotel": {
+      "title": "Измайлово Гамма",
+      "address": "Измайловское шоссе 71, корпус 4 Г, Москва",
+      "distance": "9,3 км от центра",
+      "rating": 5,
+      "rooms": "Двухместный",
+      "price": "22 850₽"
+    },
+    "moreText": "Еще 2 ресторана и 3 мероприятия"
+  },
+  {
+    "airline": {
+      "title": "Аэрофлот",
+      "price": "2 800₽",
+      "citiFrom": "Абакан",
+      "timeFrom": "08:55",
+      "dateFrom": "9 июн, пт",
+      "dateTo": "9 июн, пт",
+      "citiTo": "Москва",
+      "timeTo": "12:30",
+      "duration": "3ч 35мин",
+      "baggage": false
+    },
+    "airlineBack": {
+      "title": "Аэрофлот",
+      "price": "2 900₽",
+      "citiFrom": "Москва",
+      "timeFrom": "08:55",
+      "dateFrom": "9 июн, пт",
+      "dateTo": "9 июн, пт",
+      "citiTo": "Абакан",
+      "timeTo": "12:30",
+      "duration": "3ч 40мин",
+      "baggage": false
+    }
+  }
+]

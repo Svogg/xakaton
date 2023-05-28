@@ -1,39 +1,36 @@
 from fastapi import APIRouter
 from fastapi import Depends
-from pydantic import SecretStr
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.functions import count
 
+from src.database import get_async_session
 from src.identity_services.logic import pwd_context
 from src.identity_services.models import UserModel
-from src.identity_services.schemas import UserSchema
-from src.database import get_async_session
+from src.identity_services.schemas import UserInDB
 
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserSchema)
+@router.post("/register", response_model=UserInDB)
 async def register(
         username: str,
         email: str,
-        hashed_password: SecretStr,
+        hashed_password: str,
         session: AsyncSession = Depends(get_async_session)
 ):
     try:
-        user = UserSchema(username=username, email=email, hashed_password=hashed_password)
-
         id_row = select(UserModel)
         result = await session.execute(id_row)
         query = insert(UserModel).values(
             id=len(result.scalars().all()),
-            username=user.username,
-            email=user.email,
-            hashed_password=pwd_context.hash(user.hashed_password.get_secret_value()),
+            username=username,
+            email=email,
+            hashed_password=pwd_context.hash(hashed_password),
             disabled=False
         ).on_conflict_do_nothing()
+        user = UserInDB(username=username, email=email, hashed_password='***********************')
         await session.execute(query)
         await session.commit()
         return dict(**user.dict())

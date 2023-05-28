@@ -1,4 +1,4 @@
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 
 
 class UserSchema(BaseModel):
@@ -13,8 +13,9 @@ class TokenSchema(BaseModel):
 
 
 class TokenDataSchema(BaseModel):
-    username: str | None = None
+    toke_username: str | None = None
+    scopes: list[str] = []
 
 
 class UserInDB(UserSchema):
-    hashed_password: SecretStr
+    hashed_password: str
