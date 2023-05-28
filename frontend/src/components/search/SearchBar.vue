@@ -78,7 +78,8 @@ export default {
     this.citi_from = this.getUser.citi
   },
   computed: {
-    ...mapGetters('user', ["getUser", "getChoice"]),
+    ...mapGetters('user', ["getChoice"]),
+    ...mapGetters('auth', ["getUser"]),
     ...mapGetters('reference', ['getCities']),
     toCities() {
       return this.getCities.filter(el => el.id !== this.citi_from)

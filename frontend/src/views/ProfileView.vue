@@ -2,8 +2,8 @@
   <div class="about">
     <h1>Профиль пользователя</h1>
 
-    <h2>{{ getUser.name }}</h2>
-    <h3>{{ getUser.login }}</h3>
+    <h2>{{ getUser.username }}</h2>
+    <h3>{{ getUser.email }}</h3>
     <v-autocomplete
         label="Город"
         :items="getCities"
@@ -25,12 +25,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['getUser']),
+    ...mapGetters('auth', ['getUser']),
     ...mapGetters('reference', ['getCities'])
   },
   methods: {
     setUserCiti(event) {
-      this.$store.commit('user/setUserCiti', event)
+      this.$store.commit('auth/setUserCiti', event)
     }
   },
 }
