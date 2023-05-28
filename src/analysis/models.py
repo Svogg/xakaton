@@ -1,40 +1,23 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean
 
-from ..database import Base
+from src.database import Base
+from src.identity_services.models import UserModel
 
 
-class _AbstractModel(object):
-    id = Column(String, primary_key=True)
-
-
-class _CityAbstractModel(object):
-    city_id = Column(String, ForeignKey('city.id'), nullable=True)
-
-
-class _GeoAbstractModel(_AbstractModel):
-    geo_data = Column(ARRAY(Float), nullable=True)
-
-
-class _BoughtAbstractModel(object):
-    bought_count = Column(Integer, nullable=True)
-
-
-class _EventsAbstractModel(_CityAbstractModel, _BoughtAbstractModel):
-    start = Column(String, nullable=True)
-    end = Column(String, nullable=True)
-    duration = Column(String, nullable=True)
-    price = Column(Float, nullable=True)
-
-
-class CityModel(_GeoAbstractModel, Base):
+class CityModel(Base):
     __tablename__ = 'city'
+    id = Column(String, primary_key=True)
+    geo_data = Column(ARRAY(Float), nullable=True)
     city_name = Column(String, nullable=False)
     rating = Column(Integer, nullable=True)
     timezone = Column(String, nullable=True)
 
 
-class AirPlaneTicketModel(_CityAbstractModel, _GeoAbstractModel, Base):
+class AirPlaneTicketModel(Base):
     __tablename__ = 'airplane_ticket'
+    id = Column(String, primary_key=True)
+    city_id = Column(String, ForeignKey('city.id'))
+    geo_data = Column(ARRAY(Float), nullable=True)
     target_city = Column(String, ForeignKey('city.id'), nullable=False)
     flight_start = Column(String, nullable=False)
     flight_end = Column(String, nullable=False)
@@ -42,40 +25,61 @@ class AirPlaneTicketModel(_CityAbstractModel, _GeoAbstractModel, Base):
     airline_name = Column(String, nullable=False)
 
 
-class EventModel(_AbstractModel, _EventsAbstractModel, Base):
+class EventModel(Base):
     __tablename__ = 'event'
+    id = Column(String, primary_key=True)
+    city_id = Column(String, ForeignKey('city.id'))
+    start = Column(String, nullable=True)
+    end = Column(String, nullable=True)
+    duration = Column(String, nullable=True)
+    price = Column(Float, nullable=True)
+    bought_count = Column(Integer, nullable=True)
 
 
-class ExcursionModel(_AbstractModel, _EventsAbstractModel, _BoughtAbstractModel, Base):
+class ExcursionModel(Base):
     __tablename__ = 'excursion'
+    id = Column(String, primary_key=True)
+    city_id = Column(String, ForeignKey('city.id'))
+    geo_data = Column(ARRAY(Float), nullable=True)
+    start = Column(String, nullable=True)
+    end = Column(String, nullable=True)
+    duration = Column(String, nullable=True)
+    price = Column(Float, nullable=True)
+    bought_count = Column(Integer, nullable=True)
 
 
-class RestaurantModel(_GeoAbstractModel, _CityAbstractModel, _BoughtAbstractModel, Base):
+class RestaurantModel(Base):
     __tablename__ = 'restaurant'
+    id = Column(String, primary_key=True)
+    city_id = Column(String, ForeignKey('city.id'))
+    geo_data = Column(ARRAY(Float), nullable=True)
     name = Column(String, nullable=True)
     kitchen_type = Column(ARRAY(String), nullable=True)
     mean_price = Column(Float, nullable=True)
+    bought_count = Column(Integer, nullable=True)
 
 
-class RegionModel(_AbstractModel, Base):
+class RegionModel(Base):
     __tablename__ = 'region'
+    id = Column(String, primary_key=True)
     title = Column(String, nullable=True)
     price_hotel = Column(Integer, nullable=True)
 
 
-class HotelModel(_AbstractModel, Base, _CityAbstractModel, _BoughtAbstractModel):
+class HotelModel(Base):
     __tablename__ = 'hotel'
+    id = Column(String, primary_key=True)
+    city_id = Column(String, ForeignKey('city.id'), nullable=True)
     address = Column(String, nullable=True)
-    stars = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
+    stars = Column(String, nullable=True)
     title = Column(String, nullable=True)
     list_services = Column(ARRAY(String), nullable=True)
+    bought_count = Column(Integer, nullable=True)
 
 
-class UserModel(_AbstractModel, Base):
-    __tablename__ = 'user'
-    email = Column(String, nullable=True)
-    phone_number = Column(String, nullable=True)
+class DBUserModel(UserModel):
+    ...
 
 
 class UserAnalyticsModel(Base):
@@ -95,7 +99,7 @@ class UserAnalyticsModel(Base):
 
 class DataMlModel(Base):
     __tablename__ = 'mldata'
-    pk = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(String, nullable=True)
     user_id = Column(String, nullable=True)
     bought = Column(Integer, nullable=False)
