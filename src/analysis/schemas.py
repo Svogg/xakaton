@@ -22,6 +22,7 @@ class EventSchema(BaseModel):
     bought_count: int
 
 
+
 class ExcursionSchema(BaseModel):
     id: str
     start: datetime
@@ -47,6 +48,7 @@ class HotelSchema(BaseModel):
     title: str
     list_services: List[str]
     bought_count: int
+
 
 
 class RegionSchema(BaseModel):
@@ -88,3 +90,4 @@ class DataMlSchema(BaseModel):
     item_id: str
     user_id: str
     bought: int
+
