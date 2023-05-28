@@ -1,10 +1,10 @@
 import pandas as pd
-from src.database import engine
+from xakaton.src.database import engine
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
 
-def recommend_event(user_id, recommendations=5):
+def recommend_event(user_id, recommendations=10):
     items = pd.read_sql_table('mldata', columns=['item_id', 'user_id', 'bought'], con=engine)
     user_matrix = items.pivot(index='item_id',
                               columns='user_id',
