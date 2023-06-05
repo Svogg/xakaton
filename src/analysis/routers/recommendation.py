@@ -5,15 +5,17 @@ from src.services.analytics import recommend_event
 from typing_extensions import Annotated
 from src.database import get_async_session
 from src.analysis.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
-from src.identity_services.logic import get_current_active_user
-from src.identity_services.schemas import UserInDB
+from src.identity_endpoints.logic import get_current_active_user
+from src.identity_endpoints.schemas import UserInDB
 
 router = APIRouter()
 
 
 @router.get('/recommendations/{id}')
-async def get_recommendations(current_user: Annotated[UserInDB, Depends(get_current_active_user)],
-                              session: AsyncSession = Depends(get_async_session)):
+async def get_recommendations(
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
+        session: AsyncSession = Depends(get_async_session)
+):
     if current_user:
         last_choice = select(DataMlModel).filter_by(username=current_user.username).order_by(DataMlModel.id.desc())
         new_data = await session.execute(last_choice)
@@ -31,23 +33,21 @@ async def get_recommendations(current_user: Annotated[UserInDB, Depends(get_curr
         data_list = []
         for el in rec:
             data_list.append(
-            (
-                await session.execute(select(DataMlModel).filter_by(id=el))
-            ).scalars().all()[0].item_id
+                (await session.execute(select(DataMlModel).filter_by(id=el))).scalars().all()[0].item_id
             )
         buf = []
         res = []
 
-        for id in data_list:
-            buf.append(await session.execute(select(HotelModel).filter_by(id=id)))
-            buf.append(await session.execute(select(RestaurantModel).filter_by(id=id)))
-            buf.append(await session.execute(select(ExcursionModel).filter_by(id=id)))
-            buf.append(await session.execute(select(EventModel).filter_by(id=id)))
+        for i in data_list:
+            buf.append(await session.execute(select(HotelModel).filter_by(id=i)))
+            buf.append(await session.execute(select(RestaurantModel).filter_by(id=i)))
+            buf.append(await session.execute(select(ExcursionModel).filter_by(id=i)))
+            buf.append(await session.execute(select(EventModel).filter_by(id=i)))
         for item in buf:
             ans = item.scalars().all()
             if ans:
                 res.append(ans)
-        return [i for i in res]
+        return res
 
 
 @router.post('/add_to_favour/{username}')

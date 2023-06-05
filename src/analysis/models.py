@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean
 
 from src.database import Base
-from src.identity_services.models import UserModel
+from src.identity_endpoints.models import UserModel
 
 
 class CityModel(Base):

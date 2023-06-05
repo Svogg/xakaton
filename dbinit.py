@@ -13,7 +13,6 @@ from src.analysis.models import CityModel, EventModel, ExcursionModel, Restauran
 from src.database import get_async_session
 
 
-
 async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/cities.json', 'r', encoding='utf-8') as cities:
         data_cities = json.load(cities)
@@ -31,7 +30,6 @@ async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_
             except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
                 continue
     print('cities added')
-
 
 
 async def add_event(event: EventModel, current_session: AsyncSession = Depends(get_async_session)):
@@ -83,7 +81,6 @@ async def add_event(event: EventModel, current_session: AsyncSession = Depends(g
     print('events_added')
 
 
-
 async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/excursions.json', 'r', encoding='utf-8') as excursions:
         data_excursions = json.load(excursions)
@@ -120,7 +117,6 @@ async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession
     print('excursions_added')
 
 
-
 async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(get_async_session)):
     with open('17_dataset/hotels.json', 'r', encoding='utf-8') as hotels:
         data_hotels = json.load(hotels)
@@ -139,7 +135,6 @@ async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(g
             except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
                 continue
     print('hotels_added')
-
 
 
 async def add_region(region: RegionModel, current_session: AsyncSession = Depends(get_async_session)):
