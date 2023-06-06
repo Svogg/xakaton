@@ -15,10 +15,10 @@ router = APIRouter()
 async def get_recommendations(current_user: Annotated[UserInDB, Depends(get_current_active_user)],
                               session: AsyncSession = Depends(get_async_session)):
     if current_user:
-        data = await session.execute(select(DataMlModel))
-        print([u.__dict__ for u in data.all()])
-        return data.scalars().all()
-        rec = await recommend_event(current_user.username, session)
+        query = await session.execute(select(DataMlModel))
+        data = [[i.item_id, i.username, i.bought] for i in query.scalars().all()]
+        # print(data)
+        rec = await recommend_event(current_user.username, data)
         buf = []
         res = []
 
