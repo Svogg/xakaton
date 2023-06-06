@@ -1,19 +1,20 @@
 from fastapi import APIRouter
 from fastapi import Depends
+
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
-from src.identity_services.logic import pwd_context
-from src.identity_services.models import UserModel
-from src.identity_services.schemas import UserInDB
+from backend.database import get_async_session
+from backend.identity_endpoints.logic import pwd_context
+from backend.identity_endpoints.models import UserModel
+from backend.identity_endpoints.schemas import UserInDB
 
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserInDB)
+@router.post("/register", response_model=UserInDB, summary='endpoint for user registration')
 async def register(
         username: str,
         email: str,
@@ -30,7 +31,7 @@ async def register(
             hashed_password=pwd_context.hash(hashed_password),
             disabled=False
         ).on_conflict_do_nothing()
-        user = UserInDB(username=username, email=email, hashed_password='***********************')
+        user = UserInDB(username=username, email=email, hashed_password='******************')
         await session.execute(query)
         await session.commit()
         return dict(**user.dict())

@@ -1,10 +1,25 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import Base
-from src.identity_services.models import UserModel
+from backend.database import Base
+from backend.identity_endpoints.models import UserModel
 
 
-class CityModel(Base):
+class BaseLogic:
+    @classmethod
+    async def find_all(cls, session: AsyncSession):
+        stmt = select(cls)
+        result = await session.execute(stmt)
+        return result.scalars().all()
+
+    @classmethod
+    async def find_one(cls, i: str, session: AsyncSession):
+        stmt = select(cls).filter_by(id=i)
+        result = await session.execute(stmt)
+        return result.scalars().one()
+
+
+class CityModel(Base, BaseLogic):
     __tablename__ = 'city'
     id = Column(String, primary_key=True)
     geo_data = Column(ARRAY(Float), nullable=True)
@@ -13,7 +28,7 @@ class CityModel(Base):
     timezone = Column(String, nullable=True)
 
 
-class AirPlaneTicketModel(Base):
+class AirPlaneTicketModel(Base, BaseLogic):
     __tablename__ = 'airplane_ticket'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -25,7 +40,7 @@ class AirPlaneTicketModel(Base):
     airline_name = Column(String, nullable=False)
 
 
-class EventModel(Base):
+class EventModel(Base, BaseLogic):
     __tablename__ = 'event'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -36,7 +51,7 @@ class EventModel(Base):
     bought_count = Column(Integer, nullable=True)
 
 
-class ExcursionModel(Base):
+class ExcursionModel(Base, BaseLogic):
     __tablename__ = 'excursion'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -48,7 +63,7 @@ class ExcursionModel(Base):
     bought_count = Column(Integer, nullable=True)
 
 
-class RestaurantModel(Base):
+class RestaurantModel(Base, BaseLogic):
     __tablename__ = 'restaurant'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -59,35 +74,33 @@ class RestaurantModel(Base):
     bought_count = Column(Integer, nullable=True)
 
 
-class RegionModel(Base):
+class RegionModel(Base, BaseLogic):
     __tablename__ = 'region'
     id = Column(String, primary_key=True)
     title = Column(String, nullable=True)
     price_hotel = Column(Integer, nullable=True)
 
 
-class HotelModel(Base):
+class HotelModel(Base, BaseLogic):
     __tablename__ = 'hotel'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'), nullable=True)
     address = Column(String, nullable=True)
     stars = Column(String, nullable=True)
     geo_data = Column(ARRAY(Float), nullable=True)
-    stars = Column(String, nullable=True)
     title = Column(String, nullable=True)
     list_services = Column(ARRAY(String), nullable=True)
     bought_count = Column(Integer, nullable=True)
-
 
 
 class DBUserModel(UserModel):
     ...
 
 
-class UserAnalyticsModel(Base):
+class UserAnalyticsModel(Base, BaseLogic):
     __tablename__ = 'analytics'
     session = Column(Integer, primary_key=True)
-    user_id = Column(String, ForeignKey('user.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
     target_region = Column(String, ForeignKey('region.id'), nullable=True)
     current_city = Column(String, ForeignKey('city.id'), nullable=True)
     target_city = Column(String, ForeignKey('city.id'), nullable=True)

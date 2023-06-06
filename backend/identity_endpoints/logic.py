@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import HTTPException, Depends
 from fastapi import status
@@ -9,19 +9,17 @@ from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
-from src.identity_services.models import UserModel
-from src.identity_services.schemas import TokenDataSchema, UserInDB
+from backend.config import SECRET_KEY
+from backend.database import get_async_session
+from backend.identity_endpoints.models import UserModel
+from backend.identity_endpoints.schemas import TokenDataSchema, UserInDB
+
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/token",
-    scopes={
-
-        "items": "Read items."
-    },
+    tokenUrl="/identity/login",
 )
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+SECRET_KEY = SECRET_KEY
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
