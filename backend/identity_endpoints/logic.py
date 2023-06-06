@@ -9,10 +9,10 @@ from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.config import SECRET_KEY
-from src.database import get_async_session
-from src.identity_endpoints.models import UserModel
-from src.identity_endpoints.schemas import TokenDataSchema, UserInDB
+from backend.config import SECRET_KEY
+from backend.database import get_async_session
+from backend.identity_endpoints.models import UserModel
+from backend.identity_endpoints.schemas import TokenDataSchema, UserInDB
 
 
 oauth2_scheme = OAuth2PasswordBearer(

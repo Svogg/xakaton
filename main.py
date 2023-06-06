@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.analysis.routers import event
-from src.analysis.routers import recommendation
-from src.analysis.routers import region, hotel, excursion, city, restaurant
-from src.identity_endpoints.routers import aggregated_router as identity_routers
+
+from backend.identity_endpoints.routers import aggregated_router as identity_routers
+from backend.entity_endpoints.routers import aggregated_router as entity_routers
 
 
 app = FastAPI(
@@ -32,10 +31,8 @@ app.include_router(
 )
 
 
-app.include_router(city.router)
-app.include_router(event.router)
-app.include_router(excursion.router)
-app.include_router(hotel.router)
-app.include_router(region.router)
-app.include_router(restaurant.router)
-app.include_router(recommendation.router)
+app.include_router(
+    entity_routers,
+    prefix='/entity',
+    tags=['Entity']
+)

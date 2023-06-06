@@ -4,8 +4,8 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from src.analysis.models import Base
-from src.config import DB_DRIVER, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+from backend.entity_endpoints.models import Base
+from backend.config import DB_DRIVER, DB_CONNECTOR, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

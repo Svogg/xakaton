@@ -6,10 +6,10 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
-from src.identity_endpoints.logic import pwd_context
-from src.identity_endpoints.models import UserModel
-from src.identity_endpoints.schemas import UserInDB
+from backend.database import get_async_session
+from backend.identity_endpoints.logic import pwd_context
+from backend.identity_endpoints.models import UserModel
+from backend.identity_endpoints.schemas import UserInDB
 
 router = APIRouter()
 

@@ -5,8 +5,8 @@ from fastapi import Depends
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
-from src.identity_endpoints.logic import get_current_active_user
-from src.identity_endpoints.schemas import UserInDB
+from backend.identity_endpoints.logic import get_current_active_user
+from backend.identity_endpoints.schemas import UserInDB
 
 
 async def recommend_event(
