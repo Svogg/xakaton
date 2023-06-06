@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.services.analytics import recommend_event
+from backend.services.analytics import recommend_event
 from typing_extensions import Annotated
-from src.database import get_async_session
-from src.analysis.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
-from src.identity_endpoints.logic import get_current_active_user
-from src.identity_endpoints.schemas import UserInDB
+from backend.database import get_async_session
+from backend.entity_endpoints.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
+from backend.identity_endpoints.logic import get_current_active_user
+from backend.identity_endpoints.schemas import UserInDB
 
 router = APIRouter()
 
