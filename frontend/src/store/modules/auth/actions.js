@@ -7,7 +7,7 @@ export default {
             const headers = {
                 'Content-Type': 'multipart/form-data'
             }
-            axios({url: process.env.VUE_APP_BASE + '/auth/token', data: user, method: 'POST', headers},)
+            axios({url: process.env.VUE_APP_BASE + '/identity/login', data: user, method: 'POST', headers},)
                 .then(resp => {
                     const token = resp.data.access_token
                     localStorage.setItem('token', token)
@@ -25,7 +25,7 @@ export default {
     register({commit}, user) {
         return new Promise((resolve, reject) => {
             commit('authRequest')
-            axios.post(process.env.VUE_APP_BASE + '/registration/register', null, {params: user})
+            axios.post(process.env.VUE_APP_BASE + '/identity/register', null, {params: user})
                 .then(resp => {
                     localStorage.setItem('token', '')
                     const token = null
