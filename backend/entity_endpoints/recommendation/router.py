@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.services.analytics import recommend_event, most_favour
@@ -13,6 +13,7 @@ router = APIRouter()
 
 @router.get('/recommendations/{username}')
 async def get_recommendations(
+        username: str,
         current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         session: AsyncSession = Depends(get_async_session)
 ):
@@ -45,18 +46,25 @@ async def get_recommendations(
             buf.append(await session.execute(select(EventModel).filter_by(id=i)))
 
         for item in buf:
-            ans = item.scalars().all()
+            ans = item.scalars().first()
             if ans:
                 res.append(ans)
-            if len(ans) > 9:
+            if len(res) > 9:
                 break
+        if username != current_user.username:
+            raise HTTPException(status_code=403, detail="Don't have permission")
         return res
 
 
-@router.post('/add_to_favour/{username}')
-async def add_to_favour(current_user: Annotated[UserInDB, Depends(get_current_active_user)],
-                        item_id, session: AsyncSession = Depends(get_async_session)):
+@router.post('/add_to_favour/{username}/{item_id}')
+async def add_to_favour(
+        username: str,
+        current_user: Annotated[UserInDB, Depends(get_current_active_user)],
+        item_id, session: AsyncSession = Depends(get_async_session)):
     if current_user:
+
+        if username != current_user.username:
+            raise HTTPException(status_code=403, detail="Don't have permission")
         id_row = select(DataMlModel)
         result = await session.execute(id_row)
         stmt = insert(DataMlModel).values(id=len(result.scalars().all()), item_id=item_id,
