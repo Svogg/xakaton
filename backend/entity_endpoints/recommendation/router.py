@@ -11,7 +11,7 @@ from backend.identity_endpoints.schemas import UserInDB
 router = APIRouter()
 
 
-@router.get('/recommendations/{username}')
+@router.get('/recommendations/{current_user}')
 async def get_recommendations(
         current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         session: AsyncSession = Depends(get_async_session)
@@ -36,24 +36,21 @@ async def get_recommendations(
         for el in most_val:
             if el not in data_list:
                 data_list.append(el)
-        buf = []
-        res = []
+        buf, res = [], []
         for i in data_list:
-            buf.append(await session.execute(select(HotelModel).filter_by(id=i)))
-            buf.append(await session.execute(select(RestaurantModel).filter_by(id=i)))
-            buf.append(await session.execute(select(ExcursionModel).filter_by(id=i)))
-            buf.append(await session.execute(select(EventModel).filter_by(id=i)))
+            for entity in (HotelModel, RestaurantModel, ExcursionModel, EventModel):
+                buf.append(await session.execute(select(entity).filter_by(id=i)))
 
         for item in buf:
-            ans = item.scalars().all()
+            ans = item.scalars().first()
             if ans:
                 res.append(ans)
-            if len(ans) > 9:
+            if len(res) > 9:
                 break
         return res
 
 
-@router.post('/add_to_favour/{username}')
+@router.post('/add_to_favour/{current_user}')
 async def add_to_favour(current_user: Annotated[UserInDB, Depends(get_current_active_user)],
                         item_id, session: AsyncSession = Depends(get_async_session)):
     if current_user:
