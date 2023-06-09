@@ -11,7 +11,7 @@ from backend.identity_endpoints.schemas import UserInDB
 router = APIRouter()
 
 
-@router.get('/recommendations/{id}')
+@router.get('/recommendations/{username}')
 async def get_recommendations(
         current_user: Annotated[UserInDB, Depends(get_current_active_user)],
         session: AsyncSession = Depends(get_async_session)
