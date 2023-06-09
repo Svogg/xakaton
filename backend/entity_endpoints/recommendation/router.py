@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,10 +13,11 @@ from backend.identity_endpoints.schemas import UserInDB
 router = APIRouter()
 
 
-@router.get('/recommendations/{current_user}')
+@router.get('/recommendations/{username}')
 async def get_recommendations(
         username: str,
         current_user: Annotated[UserInDB, Depends(get_current_active_user)],
+        recommendation_filter: str | None = None,
         session: AsyncSession = Depends(get_async_session)
 ):
     if current_user:
@@ -40,17 +43,25 @@ async def get_recommendations(
         buf, res = [], []
         for i in data_list:
             for entity in (HotelModel, RestaurantModel, ExcursionModel, EventModel):
-                buf.append(await session.execute(select(entity).filter_by(id=i)))
+                buf.append({entity.__tablename__: await session.execute(select(entity).filter_by(id=i))})
 
-        for item in buf:
-            ans = item.scalars().first()
-            if ans:
-                res.append(ans)
-            if len(res) > 9:
+        result = []
+        for entity in buf:
+            for k, v in entity.items():
+                value = v.scalars().first()
+                ans = {k: value if value else 'empty'}
+                if len(list(ans.values())):
+                    res.append(ans)
+            result.append(res)
+            if len(result) > 3:
                 break
+
         if username != current_user.username:
-            raise HTTPException(status_code=403, detail="Don't have permission")
-        return res
+            raise HTTPException(status_code=403, detail="Unauthorized")
+
+        if recommendation_filter is None:
+            return result
+        return [[item for item in pack if item.get(recommendation_filter)][0] for pack in result]
 
 
 @router.post('/add_to_favour/{username}/{item_id}')
@@ -61,7 +72,7 @@ async def add_to_favour(
     if current_user:
 
         if username != current_user.username:
-            raise HTTPException(status_code=403, detail="Don't have permission")
+            raise HTTPException(status_code=403, detail="Unauthorized")
         id_row = select(DataMlModel)
         result = await session.execute(id_row)
         stmt = insert(DataMlModel).values(id=len(result.scalars().all()), item_id=item_id,
