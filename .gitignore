@@ -1,6 +1,4 @@
-.dbenv
-.dev_env
->>>>>>> master
+.*env
 __pycache__/
 .idea
 backend/services/sample.py
