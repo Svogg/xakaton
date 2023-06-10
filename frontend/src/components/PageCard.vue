@@ -7,17 +7,19 @@
       <ChoiceLine/>
     </div>
     <div class="search-bar-block">
-      <SearchBar/>
+      <SearchBar
+        @search="searchHandler"
+      />
     </div>
     <div class="question">
       <v-row>
-        <v-col cols="12" lg="4" sm="6" xs="12" v-if="activeChoice.includes('hotel')">
+        <v-col cols="12" lg="4" sm="6" xs="12" v-if="getActiveChoice.includes('hotel')">
           <QuestionHotelCard/>
         </v-col>
-        <v-col cols="12" lg="4" sm="6" xs="12" v-if="activeChoice.includes('restaurant')">
+        <v-col cols="12" lg="4" sm="6" xs="12" v-if="getActiveChoice.includes('restaurant')">
           <QuestionRestaurantCard/>
         </v-col>
-        <v-col cols="12" lg="4" sm="6" xs="12" v-if="activeChoice.includes('avia')">
+        <v-col cols="12" lg="4" sm="6" xs="12" v-if="getActiveChoice.includes('avia')">
           <QuestionAviaCard/>
         </v-col>
       </v-row>
@@ -55,18 +57,20 @@ export default {
   components: {ChoiceLine, SearchBar, QuestionHotelCard, QuestionRestaurantCard, QuestionAviaCard, RecommendationCard},
   data() {
     return {
-      recommendation: recommendation
+      recommendation: []
     }
   },
   computed: {
-    ...mapGetters('user', ["getChoiceCategories"]),
-    activeChoice() {
-      return Object.keys(this.getChoiceCategories)
-          .filter(key => this.getChoiceCategories[key].active)
-          .reduce((obj, key) => {
-            obj.push(key)
-            return obj
-          }, [])
+    ...mapGetters('user', ["getChoiceCategories", "getActiveChoice"]),
+  },
+  methods:{
+    searchHandler(data){
+      console.log('searchHandler', data, this.getActiveChoice
+          .map(key=>this.getChoiceCategories[key].oid))
+      this.load()
+    },
+    load(){
+      this.recommendation = recommendation
     }
   }
 }

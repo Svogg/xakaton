@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-button" :class="{gap:icon}" @click="$emit('click')">
+  <div class="custom-button" :class="{gap:icon, disabled}" @click="clickHandler">
     <v-icon v-text="icon"></v-icon>
     <div>{{ title }}</div>
   </div>
@@ -10,7 +10,14 @@ export default {
   name: "CustomButton",
   props: {
     title: String,
-    icon: String
+    icon: String,
+    disabled: Boolean
+  },
+  methods:{
+    clickHandler(){
+      if(this.disabled) return
+      this.$emit('click')
+    }
   }
 }
 </script>
@@ -41,6 +48,11 @@ export default {
   &:hover {
     border: 2px solid var(--v-primary-base);
     color: var(--text-secondary);
+  }
+
+  &.disabled{
+    cursor: no-drop;
+    opacity: 0.1;
   }
 }
 
