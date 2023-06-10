@@ -1,31 +1,19 @@
-from typing import Optional, Annotated
-
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean, select, text
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.database import Base
 from backend.identity_endpoints.models import UserModel
 
 
-class CityModel(Base):
-    __tablename__ = 'city'
-    id = Column(String, primary_key=True)
-    geo_data = Column(ARRAY(Float), nullable=True)
-    city_name = Column(String, nullable=False)
-    rating = Column(Integer, nullable=True)
-    timezone = Column(String, nullable=True)
-
+class BaseLogic:
     @classmethod
     async def find_all(
             cls,
             session: AsyncSession,
             offset: int,
-            rating: Annotated[float, None] = None,
             limit: int = 10,
     ):
-        stmt = select(cls).filter(text('city.rating > {}'.format(rating)))
-        stmt = stmt.offset(offset).limit(limit)
-        print(stmt)
+        stmt = select(cls).offset(offset).limit(limit)
         result = await session.execute(stmt)
         return result.scalars().all()
 
@@ -33,14 +21,23 @@ class CityModel(Base):
     async def find_one(
             cls,
             session: AsyncSession,
-            *args
+            entity_id: str,
     ):
-        stmt = select(cls).filter(*args)
+        stmt = select(cls).filter_by(id=entity_id)
         result = await session.execute(stmt)
         return result.scalars().one()
 
 
-class AirPlaneTicketModel(Base):
+class CityModel(Base, BaseLogic):
+    __tablename__ = 'city'
+    id = Column(String, primary_key=True)
+    geo_data = Column(ARRAY(Float), nullable=True)
+    city_name = Column(String, nullable=False)
+    rating = Column(Integer, nullable=True)
+    timezone = Column(String, nullable=True)
+
+
+class AirPlaneTicketModel(Base, BaseLogic):
     __tablename__ = 'airplane_ticket'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -51,30 +48,8 @@ class AirPlaneTicketModel(Base):
     flight_price = Column(Float, nullable=False)
     airline_name = Column(String, nullable=False)
 
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
 
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
-
-
-class EventModel(Base):
+class EventModel(Base, BaseLogic):
     __tablename__ = 'event'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -84,30 +59,8 @@ class EventModel(Base):
     price = Column(Float, nullable=True)
     bought_count = Column(Integer, nullable=True)
 
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
 
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
-
-
-class ExcursionModel(Base):
+class ExcursionModel(Base, BaseLogic):
     __tablename__ = 'excursion'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -118,30 +71,8 @@ class ExcursionModel(Base):
     price = Column(Float, nullable=True)
     bought_count = Column(Integer, nullable=True)
 
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
 
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
-
-
-class RestaurantModel(Base):
+class RestaurantModel(Base, BaseLogic):
     __tablename__ = 'restaurant'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'))
@@ -151,59 +82,15 @@ class RestaurantModel(Base):
     mean_price = Column(Float, nullable=True)
     bought_count = Column(Integer, nullable=True)
 
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
 
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
-
-
-class RegionModel(Base):
+class RegionModel(Base, BaseLogic):
     __tablename__ = 'region'
     id = Column(String, primary_key=True)
     title = Column(String, nullable=True)
     price_hotel = Column(Integer, nullable=True)
 
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
 
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
-
-
-class HotelModel(Base):
+class HotelModel(Base, BaseLogic):
     __tablename__ = 'hotel'
     id = Column(String, primary_key=True)
     city_id = Column(String, ForeignKey('city.id'), nullable=True)
@@ -213,28 +100,6 @@ class HotelModel(Base):
     title = Column(String, nullable=True)
     list_services = Column(ARRAY(String), nullable=True)
     bought_count = Column(Integer, nullable=True)
-
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
-
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
 
 
 class DBUserModel(UserModel):
@@ -254,28 +119,6 @@ class UserAnalyticsModel(Base):
     target_restaurant = Column(String, ForeignKey('restaurant.id'), nullable=True)
     target_excursion = Column(String, ForeignKey('excursion.id'), nullable=True)
     bought = Column(Boolean, nullable=False)
-
-    @classmethod
-    async def find_all(
-            cls,
-            session: AsyncSession,
-            offset: int,
-            limit: int = 10,
-    ):
-        stmt = select(cls).filter()
-        stmt = stmt.offset(offset).limit(limit)
-        result = await session.execute(stmt)
-        return result.scalars().all()
-
-    @classmethod
-    async def find_one(
-            cls,
-            session: AsyncSession,
-            *args
-    ):
-        stmt = select(cls).filter(*args)
-        result = await session.execute(stmt)
-        return result.scalars().one()
 
 
 class DataMlModel(Base):

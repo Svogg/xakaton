@@ -1,20 +1,39 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from sqlalchemy import select, exc
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.entity_endpoints.models import HotelModel
 from backend.database import get_async_session
 
 router = APIRouter()
+hotel = HotelModel
 
 
 @router.get('/hotels')
-async def get_all_hotels(session: AsyncSession = Depends(get_async_session)):
-    query = select(HotelModel)
-    result = await session.execute(query)
-    return result.scalars().all()
+async def find_hotels(
+        offset: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    result = await hotel.find_all(
+        offset=offset,
+        session=session
+    )
+    return result if len(result) else {
+        'data': 'Oops... Nothing to show you :('
+    }
 
 
 @router.get('/hotel/{id}')
-async def get_one_hotel(id: str, session: AsyncSession = Depends(get_async_session)):
-    result = await session.execute(select(HotelModel).filter_by(id=id))
-    return result.scalars().all()
+async def find_one_hotel(
+        hotel_id: str,
+        session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        result = await hotel.find_one(
+            entity_id=hotel_id,
+            session=session
+        )
+        return result
+    except exc.NoResultFound:
+        return {
+            'data': 'Oops... Nothing to show you :('
+        }
