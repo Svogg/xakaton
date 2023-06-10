@@ -10,10 +10,16 @@ excursion = ExcursionModel
 
 
 @router.get('/excursions')
-async def find_excursions(session: AsyncSession = Depends(get_async_session)):
-    return await excursion.find_all(session)
+async def find_excursions(
+        offset: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await excursion.find_all(offset=offset, session=session)
 
 
 @router.get('/excursion/{id}')
-async def find_one_excursion(excursion_id: str, session: AsyncSession = Depends(get_async_session)):
+async def find_one_excursion(
+        excursion_id: str,
+        session: AsyncSession = Depends(get_async_session)
+):
     return await excursion.find_one(excursion_id, session)
