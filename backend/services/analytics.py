@@ -16,7 +16,6 @@ async def recommend_event(
     ).fillna(0)
     user_data = csr_matrix(user_matrix.values)
     user_item_matrix = user_matrix.rename_axis(None, axis=0).reset_index()
-    print(user_item_matrix)
     ml_model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=20, n_jobs=-1)
     ml_model.fit(user_data)
     user = user_item_matrix[user_item_matrix['index'] == username].index[0]
@@ -24,7 +23,7 @@ async def recommend_event(
         user_data[user],
         n_neighbors=3
     )[1][0]
-    return indices
+    return indices[1:]
 
 
 def most_favour(data):

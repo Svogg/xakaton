@@ -1,14 +1,13 @@
-from typing import Optional
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.services.analytics import recommend_event, most_favour
 from typing_extensions import Annotated
+
 from backend.database import get_async_session
 from backend.entity_endpoints.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
 from backend.identity_endpoints.logic import get_current_active_user
 from backend.identity_endpoints.schemas import UserInDB
+from backend.services.analytics import recommend_event, most_favour
 
 router = APIRouter()
 
@@ -32,28 +31,35 @@ async def get_recommendations(
         ]
         most_val = most_favour(new_res)
         rec = await recommend_event(list_dict=new_res, username=current_user.username)
+
         data_list = []
         for el in rec:
             data_list.append(
                 (await session.execute(select(DataMlModel).filter_by(id=el))).scalars().all()[0].item_id
             )
+
         for el in most_val:
             if el not in data_list:
                 data_list.append(el)
+
         buf, res = [], []
         for i in data_list:
+            buf_dict = {}
             for entity in (HotelModel, RestaurantModel, ExcursionModel, EventModel):
-                buf.append({entity.__tablename__: await session.execute(select(entity).filter_by(id=i))})
+                element = await session.execute(select(entity).filter_by(id=i))
+                buf_dict.update({entity.__tablename__: element.scalars().first()})
+            buf.append(buf_dict)
 
         result = []
         for entity in buf:
+            obj = []
             for k, v in entity.items():
-                value = v.scalars().first()
-                ans = {k: value if value else 'empty'}
+                ans = {k: v if v else 'empty'}
                 if len(list(ans.values())):
-                    res.append(ans)
-            result.append(res)
-            if len(result) > 3:
+                    obj.append(ans)
+
+            result.append(obj)
+            if len(result) > 9:
                 break
 
         if username != current_user.username:
@@ -75,8 +81,11 @@ async def add_to_favour(
             raise HTTPException(status_code=403, detail="Unauthorized")
         id_row = select(DataMlModel)
         result = await session.execute(id_row)
-        stmt = insert(DataMlModel).values(id=len(result.scalars().all()), item_id=item_id,
-                                          username=current_user.username, bought=1)
+        stmt = insert(DataMlModel).values(
+            id=len(result.scalars().all()),
+            item_id=item_id,
+            username=current_user.username, bought=1
+        )
         await session.execute(stmt)
         await session.commit()
         return {
