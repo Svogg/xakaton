@@ -14,7 +14,7 @@ from backend.database import get_async_session
 
 
 async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/cities.json', 'r', encoding='utf-8') as cities:
+    with open('backend/17_dataset/cities.json', 'r', encoding='utf-8') as cities:
         data_cities = json.load(cities)
         for i in data_cities:
             try:
@@ -33,7 +33,7 @@ async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_
 
 
 async def add_event(event: EventModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/events.json', 'r', encoding='utf-8') as events:
+    with open('backend/17_dataset/events.json', 'r', encoding='utf-8') as events:
         data_events = json.load(events)
         for i in data_events:
             try:
@@ -82,7 +82,7 @@ async def add_event(event: EventModel, current_session: AsyncSession = Depends(g
 
 
 async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/excursions.json', 'r', encoding='utf-8') as excursions:
+    with open('backend/17_dataset/excursions.json', 'r', encoding='utf-8') as excursions:
         data_excursions = json.load(excursions)
         for i in data_excursions:
             try:
@@ -118,7 +118,7 @@ async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession
 
 
 async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/hotels.json', 'r', encoding='utf-8') as hotels:
+    with open('backend/17_dataset/hotels.json', 'r', encoding='utf-8') as hotels:
         data_hotels = json.load(hotels)
         for i in data_hotels:
             try:
@@ -138,7 +138,7 @@ async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(g
 
 
 async def add_region(region: RegionModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/regions.json', 'r', encoding='utf-8') as regions:
+    with open('backend/17_dataset/regions.json', 'r', encoding='utf-8') as regions:
         data_regions = json.load(regions)
         for i in data_regions:
             try:
@@ -155,7 +155,7 @@ async def add_region(region: RegionModel, current_session: AsyncSession = Depend
 
 
 async def add_restaurant(restaurant: RestaurantModel, current_session: AsyncSession = Depends(get_async_session)):
-    with open('17_dataset/restaurants.json', 'r', encoding='utf-8') as restaurants:
+    with open('backend/17_dataset/restaurants.json', 'r', encoding='utf-8') as restaurants:
         data_restaurants = json.load(restaurants)
         for i in data_restaurants:
             try:

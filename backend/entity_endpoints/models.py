@@ -57,7 +57,7 @@ class EventModel(Base, BaseLogic):
     end = Column(String, nullable=True)
     duration = Column(String, nullable=True)
     price = Column(Float, nullable=True)
-    bought_count = Column(Integer, nullable=True)
+    # bought_count = Column(Integer, nullable=True)
 
 
 class ExcursionModel(Base, BaseLogic):
@@ -69,7 +69,7 @@ class ExcursionModel(Base, BaseLogic):
     end = Column(String, nullable=True)
     duration = Column(String, nullable=True)
     price = Column(Float, nullable=True)
-    bought_count = Column(Integer, nullable=True)
+    # bought_count = Column(Integer, nullable=True)
 
 
 class RestaurantModel(Base, BaseLogic):
@@ -80,7 +80,7 @@ class RestaurantModel(Base, BaseLogic):
     name = Column(String, nullable=True)
     kitchen_type = Column(ARRAY(String), nullable=True)
     mean_price = Column(Float, nullable=True)
-    bought_count = Column(Integer, nullable=True)
+    # bought_count = Column(Integer, nullable=True)
 
 
 class RegionModel(Base, BaseLogic):
@@ -99,7 +99,7 @@ class HotelModel(Base, BaseLogic):
     geo_data = Column(ARRAY(Float), nullable=True)
     title = Column(String, nullable=True)
     list_services = Column(ARRAY(String), nullable=True)
-    bought_count = Column(Integer, nullable=True)
+    # bought_count = Column(Integer, nullable=True)
 
 
 class DBUserModel(UserModel):
