@@ -24,7 +24,7 @@
       <v-col cols="12" :lg="getActiveChoice.includes('avia') ? 3 : 6"
              :md="getActiveChoice.includes('avia') ? 6 : 12"
              :sm="getActiveChoice.includes('avia') ? 6 : 12" class="px-0">
-        <div class="element arrive-to">
+        <div class="element arrive-to" :class="{'only-to': !getActiveChoice.includes('avia')}">
           <v-autocomplete
               label="КУДА"
               :items="toCities"
@@ -40,7 +40,7 @@
       <v-col cols="9" lg="3" md="8" sm="8" class="px-0">
         <div class="element travel-period">
           <DatePicker
-            :value.sync="dates"
+              :value.sync="dates"
           />
         </div>
       </v-col>
@@ -98,14 +98,14 @@ export default {
     toCities() {
       return this.getCities.filter(el => el.id !== this.citi_from)
     },
-    canSearch(){
+    canSearch() {
       return (this.getActiveChoice.includes('avia') ? this.citi_from : true)
           && this.citi_to && this.dates.length
     }
   },
-  methods:{
-    searchHandler(){
-        this.$emit('search', {
+  methods: {
+    searchHandler() {
+      this.$emit('search', {
         citi_from: this.citi_from,
         citi_to: this.citi_to,
         adult: this.adult,
@@ -145,6 +145,11 @@ export default {
 
   .arrive-to {
     border-bottom: 1px solid #cccccc;
+
+    &.only-to {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
   }
 
   .travel-period {

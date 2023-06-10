@@ -8,7 +8,7 @@
     </div>
     <div class="search-bar-block">
       <SearchBar
-        @search="searchHandler"
+          @search="searchHandler"
       />
     </div>
     <div class="question">
@@ -33,8 +33,19 @@
                :key="index"
         >
           <RecommendationCard
-
               :item="item"
+          />
+        </v-col>
+        <v-col cols="12" lg="3"
+               v-for="(topArrive, index) of topArrives"
+               :key="index"
+        >
+          <TopArrive
+
+              :title="topArrive.title"
+              :price="topArrive.price"
+              :dates="topArrive.dates"
+              :image="topArrive.image"
           />
         </v-col>
       </v-row>
@@ -51,25 +62,45 @@ import QuestionRestaurantCard from "@/components/question/QuestionRestaurantCard
 import QuestionAviaCard from "@/components/question/QuestionAviaCard.vue";
 import RecommendationCard from "@/components/recommendation/RecommendationCard.vue";
 import recommendation from "/recomendation.json"
+import TopArrive from "@/components/TopArrive.vue";
 
 export default {
   name: 'PageCard',
-  components: {ChoiceLine, SearchBar, QuestionHotelCard, QuestionRestaurantCard, QuestionAviaCard, RecommendationCard},
+  components: {
+    ChoiceLine, SearchBar, QuestionHotelCard, QuestionRestaurantCard, QuestionAviaCard, RecommendationCard,
+    TopArrive
+  },
   data() {
     return {
-      recommendation: []
+      recommendation: [],
+      topArrives: [
+        {title: "Москва", price: 14500, dates: ['2023-06-10', '2023-06-12'], image: require('./../assets/moscow.jpeg')},
+        {
+          title: "Санкт-Петербург",
+          price: 30000,
+          dates: ['2023-06-10', '2023-06-15'],
+          image: require(`./../assets/st-petersburg.jpg`)
+        },
+        {title: "Казань", price: 28400, dates: ['2023-06-10', '2023-06-14'], image: require(`./../assets/kazn.jpg`)},
+        {
+          title: "Ярославь",
+          price: 14500,
+          dates: ['2023-06-10', '2023-06-12'],
+          image: require(`./../assets/jaroslav.jpeg`)
+        }
+      ]
     }
   },
   computed: {
     ...mapGetters('user', ["getChoiceCategories", "getActiveChoice"]),
   },
-  methods:{
-    searchHandler(data){
+  methods: {
+    searchHandler(data) {
       console.log('searchHandler', data, this.getActiveChoice
-          .map(key=>this.getChoiceCategories[key].oid))
+          .map(key => this.getChoiceCategories[key].oid))
       this.load()
     },
-    load(){
+    load() {
       this.recommendation = recommendation
     }
   }
