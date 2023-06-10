@@ -10,7 +10,7 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
-          v-model="dateRangeText"
+          :value="dateRangeText"
           label="ПЕРИОД"
           prepend-inner-icon="mdi-calendar"
           v-bind="attrs"
@@ -19,6 +19,7 @@
           readonly
           hide-details
           clearable
+          @click:clear="clearHandler"
       ></v-text-field>
     </template>
     <v-date-picker
@@ -49,10 +50,21 @@
 <script>
 export default {
   name: "DatePicker",
+  props:{
+    value: Array
+  },
   data: () => ({
     dates: [],
     menu: false,
   }),
+  watch:{
+    dates:{
+      handler(value){
+        this.$emit('update:value', value)
+      },
+      deep: true
+    }
+  },
   computed: {
     dateRangeText() {
       if(!this.dates?.length) return null
@@ -61,6 +73,11 @@ export default {
       return dt1  + dt2
     },
   },
+  methods:{
+    clearHandler(){
+      this.dates = []
+    }
+  }
 }
 </script>
 

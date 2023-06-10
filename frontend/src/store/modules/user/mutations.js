@@ -20,5 +20,8 @@ export default {
     },
     setChoiceCategoryAviaAirline(state, value){
         state.choice.category['avia'].airline = value
+    },
+    setChoiceData(state, {key, value}){
+        state.choice[key] = value
     }
 }

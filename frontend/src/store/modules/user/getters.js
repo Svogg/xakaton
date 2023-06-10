@@ -9,5 +9,13 @@ export default {
         return (code) =>{
             return state.choice.category[code]
         }
+    },
+    getActiveChoice:(state) => {
+        return Object.keys(state.choice.category)
+          .filter(key => state.choice.category[key].active)
+          .reduce((obj, key) => {
+            obj.push(key)
+            return obj
+          }, [])
     }
 }

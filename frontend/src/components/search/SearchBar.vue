@@ -5,7 +5,9 @@
     'search-bar__xs': $vuetify.breakpoint.xs,
     }">
     <v-row dense>
-      <v-col cols="12" lg="3" md="6" sm="6" class="px-0">
+      <v-col cols="12" lg="3" md="6" sm="6" class="px-0"
+             v-if="getActiveChoice.includes('avia')"
+      >
         <div class="element arrive-from">
           <v-autocomplete
               label="ОТКУДА"
@@ -19,8 +21,10 @@
           ></v-autocomplete>
         </div>
       </v-col>
-      <v-col cols="12" lg="3" md="6" sm="6" class="px-0">
-        <div class="element arrive-to">
+      <v-col cols="12" :lg="getActiveChoice.includes('avia') ? 3 : 6"
+             :md="getActiveChoice.includes('avia') ? 6 : 12"
+             :sm="getActiveChoice.includes('avia') ? 6 : 12" class="px-0">
+        <div class="element arrive-to" :class="{'only-to': !getActiveChoice.includes('avia')}">
           <v-autocomplete
               label="КУДА"
               :items="toCities"
@@ -35,18 +39,25 @@
       </v-col>
       <v-col cols="9" lg="3" md="8" sm="8" class="px-0">
         <div class="element travel-period">
-          <DatePicker/>
+          <DatePicker
+              :value.sync="dates"
+          />
         </div>
       </v-col>
       <v-col cols="3" lg="1" md="4" sm="4" class="px-0">
         <div class="element passengers">
-          <PassengersCounter/>
+          <PassengersCounter
+              :adult.sync="adult"
+              :children.sync="children"
+          />
         </div>
       </v-col>
       <v-col cols="12" lg="2" offset-lg="0" offset-md="4" md="4" class="px-0">
         <div class="element pick-up">
           <CustomButton
               title="Подобрать"
+              @click="searchHandler"
+              :disabled="!canSearch"
           />
 
         </div>
@@ -71,20 +82,38 @@ export default {
   data() {
     return {
       citi_from: null,
-      citi_to: null
+      citi_to: null,
+      adult: 1,
+      children: 0,
+      dates: []
     }
   },
   mounted() {
     this.citi_from = this.getUser.citi
   },
   computed: {
-    ...mapGetters('user', ["getChoice"]),
+    ...mapGetters('user', ["getChoice", "getActiveChoice"]),
     ...mapGetters('auth', ["getUser"]),
     ...mapGetters('reference', ['getCities']),
     toCities() {
       return this.getCities.filter(el => el.id !== this.citi_from)
+    },
+    canSearch() {
+      return (this.getActiveChoice.includes('avia') ? this.citi_from : true)
+          && this.citi_to && this.dates.length
     }
   },
+  methods: {
+    searchHandler() {
+      this.$emit('search', {
+        citi_from: this.citi_from,
+        citi_to: this.citi_to,
+        adult: this.adult,
+        children: this.children,
+        dates: this.dates
+      })
+    }
+  }
 }
 </script>
 
@@ -116,6 +145,11 @@ export default {
 
   .arrive-to {
     border-bottom: 1px solid #cccccc;
+
+    &.only-to {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
   }
 
   .travel-period {

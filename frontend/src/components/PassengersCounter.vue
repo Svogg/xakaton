@@ -30,7 +30,8 @@
           <v-list-item-subtitle>cтарше 12 лет</v-list-item-subtitle>
         </v-list-item-content>
         <CountField
-          v-model="adult"
+          :value="adult"
+          @input="$emit('update:adult', $event)"
           :min="1"
           :max="10"
         />
@@ -42,7 +43,8 @@
           <v-list-item-subtitle>от 2 до 12 лет</v-list-item-subtitle>
         </v-list-item-content>
         <CountField
-          v-model="children"
+          :value="children"
+          @input="$emit('update:children', $event)"
           :min="0"
           :max="10"
         />
@@ -59,6 +61,10 @@ export default {
   components:{
     CountField
   },
+  props:{
+      adult: Number,
+      children: Number
+  },
   data() {
     return {
       menu: false,
@@ -66,9 +72,7 @@ export default {
         'add': 'mdi-account-plus',
         'one': 'mdi-account',
         'multi': 'mdi-account-multiple'
-      },
-      adult: 1,
-      children: 0
+      }
     }
   },
   computed: {
@@ -83,7 +87,7 @@ export default {
         return this.icons["one"]
       }
       return this.icons["multi"]
-    }
+    },
   }
 }
 </script>
