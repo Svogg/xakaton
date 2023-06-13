@@ -1,11 +1,11 @@
 from fastapi import APIRouter
-from backend.entity_endpoints.city.router import router as city_router
-from backend.entity_endpoints.event.router import router as event_router
-from backend.entity_endpoints.excursion.router import router as excursion_router
-from backend.entity_endpoints.hotel.router import router as hotel_router
-from backend.entity_endpoints.region.router import router as region_router
-from backend.entity_endpoints.restaurant.router import router as restaurant_router
-from backend.entity_endpoints.recommendation.router import router as recommendation_router
+from entity_endpoints.city.router import router as city_router
+from entity_endpoints.event.router import router as event_router
+from entity_endpoints.excursion.router import router as excursion_router
+from entity_endpoints.hotel.router import router as hotel_router
+from entity_endpoints.region.router import router as region_router
+from entity_endpoints.restaurant.router import router as restaurant_router
+from entity_endpoints.recommendation.router import router as recommendation_router
 
 aggregated_router = APIRouter()
 

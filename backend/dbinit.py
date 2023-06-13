@@ -8,9 +8,9 @@ from sqlalchemy import exc
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.entity_endpoints.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel, \
+from entity_endpoints.models import CityModel, EventModel, ExcursionModel, RestaurantModel, HotelModel, RegionModel, \
     DataMlModel
-from backend.database import get_async_session
+from database import get_async_session
 
 
 async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_async_session)):

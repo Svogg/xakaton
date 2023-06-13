@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from backend.identity_endpoints.auth.router import router as auth_router
-from backend.identity_endpoints.registration.router import router as registration_router
+from identity_endpoints.auth.router import router as auth_router
+from identity_endpoints.registration.router import router as registration_router
 
 aggregated_router = APIRouter()
 

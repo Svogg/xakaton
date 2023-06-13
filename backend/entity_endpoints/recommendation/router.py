@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.services.analytics import recommend_event, most_favour
 from typing_extensions import Annotated
-from backend.database import get_async_session
-from backend.entity_endpoints.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
-from backend.identity_endpoints.logic import get_current_active_user
-from backend.identity_endpoints.schemas import UserInDB
+from database import get_async_session
+from services.analytics import recommend_event, most_favour
+from entity_endpoints.models import HotelModel, RestaurantModel, ExcursionModel, EventModel, DataMlModel
+from identity_endpoints.logic import get_current_active_user
+from identity_endpoints.schemas import UserInDB
 
 router = APIRouter()
 
 
-@router.get('/recommendations/{username}')
+@router.get('/recommendations/{current_user}')
 async def get_recommendations(
         username: str,
         current_user: Annotated[UserInDB, Depends(get_current_active_user)],
@@ -37,13 +37,10 @@ async def get_recommendations(
         for el in most_val:
             if el not in data_list:
                 data_list.append(el)
-        buf = []
-        res = []
+        buf, res = [], []
         for i in data_list:
-            buf.append(await session.execute(select(HotelModel).filter_by(id=i)))
-            buf.append(await session.execute(select(RestaurantModel).filter_by(id=i)))
-            buf.append(await session.execute(select(ExcursionModel).filter_by(id=i)))
-            buf.append(await session.execute(select(EventModel).filter_by(id=i)))
+            for entity in (HotelModel, RestaurantModel, ExcursionModel, EventModel):
+                buf.append(await session.execute(select(entity).filter_by(id=i)))
 
         for item in buf:
             ans = item.scalars().first()
