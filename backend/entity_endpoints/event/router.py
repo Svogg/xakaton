@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.database import get_async_session
-from backend.entity_endpoints.models import EventModel
+from database import get_async_session
+from entity_endpoints.models import EventModel
 
 router = APIRouter()
 

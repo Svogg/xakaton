@@ -3,8 +3,8 @@ from typing import Optional, Annotated
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, ARRAY, Boolean, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.database import Base
-from backend.identity_endpoints.models import UserModel
+from database import Base
+from identity_endpoints.models import UserModel
 
 
 class CityModel(Base):

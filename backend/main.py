@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from backend.identity_endpoints.routers import aggregated_router as identity_routers
-from backend.entity_endpoints.routers import aggregated_router as entity_routers
+from identity_endpoints.routers import aggregated_router as identity_routers
+from entity_endpoints.routers import aggregated_router as entity_routers
 
 
 app = FastAPI(
