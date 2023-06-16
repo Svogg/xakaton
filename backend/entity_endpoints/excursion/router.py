@@ -1,25 +1,20 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy import select
 from database import get_async_session
 from entity_endpoints.models import ExcursionModel
 
 router = APIRouter()
 
-excursion = ExcursionModel
-
 
 @router.get('/excursions')
-async def find_excursions(
-        offset: int,
-        session: AsyncSession = Depends(get_async_session)
-):
-    return await excursion.find_all(offset=offset, session=session)
+async def get_all_excursions(session: AsyncSession = Depends(get_async_session)):
+    query = select(ExcursionModel)
+    result = await session.execute(query)
+    return result.scalars().all()
 
 
 @router.get('/excursion/{id}')
-async def find_one_excursion(
-        excursion_id: str,
-        session: AsyncSession = Depends(get_async_session)
-):
-    return await excursion.find_one(excursion_id, session)
+async def get_one_excursion(id: str, session: AsyncSession = Depends(get_async_session)):
+    result = await session.execute(select(ExcursionModel).filter_by(id=id))
+    return result.scalars().all()

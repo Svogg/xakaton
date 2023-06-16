@@ -3,7 +3,6 @@ from time import time
 
 from asyncpg import ForeignKeyViolationError, InFailedSQLTransactionError
 from fastapi import Depends
-from psycopg2 import errors
 from sqlalchemy import exc
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +26,12 @@ async def add_city(city: CityModel, current_session: AsyncSession = Depends(get_
                 ).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+            except (
+                    exc.IntegrityError,
+                    exc.InternalError,
+                    ForeignKeyViolationError,
+                    InFailedSQLTransactionError
+            ) as e:
                 continue
     print('cities added')
 
@@ -72,8 +76,6 @@ async def add_event(event: EventModel, current_session: AsyncSession = Depends(g
             except (
                     exc.IntegrityError,
                     exc.InternalError,
-                    errors.ForeignKeyViolation,
-                    errors.UniqueViolation,
                     ForeignKeyViolationError,
                     InFailedSQLTransactionError
             ) as e:
@@ -109,11 +111,10 @@ async def add_excursion(excursion: ExcursionModel, current_session: AsyncSession
             except (
                     exc.IntegrityError,
                     exc.InternalError,
-                    errors.ForeignKeyViolation,
-                    errors.UniqueViolation,
-                    ForeignKeyViolationError
+                    ForeignKeyViolationError,
+                    InFailedSQLTransactionError
             ) as e:
-                print(e)
+                continue
     print('excursions_added')
 
 
@@ -132,7 +133,12 @@ async def add_hotel(hotel: HotelModel, current_session: AsyncSession = Depends(g
                 ).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+            except (
+                    exc.IntegrityError,
+                    exc.InternalError,
+                    ForeignKeyViolationError,
+                    InFailedSQLTransactionError
+            ) as e:
                 continue
     print('hotels_added')
 
@@ -149,7 +155,12 @@ async def add_region(region: RegionModel, current_session: AsyncSession = Depend
                 ).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+            except (
+                    exc.IntegrityError,
+                    exc.InternalError,
+                    ForeignKeyViolationError,
+                    InFailedSQLTransactionError
+            ) as e:
                 continue
     print('regions_added')
 
@@ -173,7 +184,12 @@ async def add_restaurant(restaurant: RestaurantModel, current_session: AsyncSess
                     ).on_conflict_do_nothing()
                 await current_session.execute(stmt)
                 await current_session.commit()
-            except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+            except (
+                    exc.IntegrityError,
+                    exc.InternalError,
+                    ForeignKeyViolationError,
+                    InFailedSQLTransactionError
+            ) as e:
                 continue
     print('restaurants_added')
 
@@ -192,7 +208,12 @@ async def add_item(item: DataMlModel, current_session: AsyncSession = Depends(ge
                         bought=0
                     ).on_conflict_do_nothing()
                     await current_session.execute(stmt)
-                except (exc.IntegrityError, exc.InternalError, errors.ForeignKeyViolation, errors.UniqueViolation) as e:
+                except (
+                        exc.IntegrityError,
+                        exc.InternalError,
+                        ForeignKeyViolationError,
+                        InFailedSQLTransactionError
+                ) as e:
                     continue
             await current_session.commit()
     print('items_added')
@@ -216,12 +237,11 @@ async def fill():
             except (
                     exc.IntegrityError,
                     exc.InternalError,
-                    errors.ForeignKeyViolation,
-                    errors.UniqueViolation,
+                    InFailedSQLTransactionError,
                     ForeignKeyViolationError,
                     exc.DBAPIError
             ) as e:
-                print(e)
+                continue
 
 
 def main():
