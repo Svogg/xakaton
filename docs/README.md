@@ -1,7 +1,7 @@
 ## RUSSPASS HACKATHON
 
-This solution used technologies such as: FastApi, PostgreSQL, Sklearn, Pandas. The latter were used to implement a collaborative recommendation system for users.
-
+This project is a variant of the solution to task #17 of this hackathon https://leaders2023.innoagency.ru 
+Our team made it to the finals and took seventh place.
 
 ### Start the app in Docker
 
