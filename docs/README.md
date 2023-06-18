@@ -28,13 +28,19 @@ POSTGRES_PORT=5432
 DB_NAME=db_name
 ```
 
->Start the app
+>Make docker images
 ```
->Create database in db_container
 $ docker-compose build
 $ docker-compose up -d
+```
+
+>Create database in db_container
+```
 $ docker-compose exec -it database psql —host database -U
+```
+
 >Create alembic migrations in the backend_container and load data into the database
+```
 $ docker-compose exec -it backend bash
 $ alembic init migrations
 $ alembic revision --autogenerate -m "initial"
