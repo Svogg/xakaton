@@ -50,4 +50,4 @@ $ python dbinit.py
 ```
 
 At this point, the backend runs at http://localhost:8000/
-Frontend runs at http://localhost:8000/
+Frontend runs at http://localhost:8080/
