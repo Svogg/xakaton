@@ -1,6 +1,6 @@
 ## RUSSPASS HACKATHON
 
-This solution used technologies such as: FastApi, PostgreSQL, Sklearn, Pandas. The latter were used to implement a collaborative recommendation system for users.
+The backend part of the application is made using technologies such as: FastApi, PostgreSQL, Sklearn, Pandas. The latter were used to implement a collaborative recommendation system for users.
 
 
 ### Set Up the app
