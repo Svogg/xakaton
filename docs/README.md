@@ -3,7 +3,7 @@
 This solution used technologies such as: FastApi, PostgreSQL, Sklearn, Pandas. The latter were used to implement a collaborative recommendation system for users.
 
 
-### Set Up the app
+### Start the app in Docker
 
 >Download the code
 ```
@@ -19,36 +19,28 @@ SECRET_KEY=some secret key
 
 >.dbenv contains
 ```
-DB_DRIVER=postgresql
-DB_CONNECTOR=asyncpg
-DB_USER=user
-DB_PASS=pass
-DB_HOST=localhost
-DB_PORT=5432
+POSTGRES_DRIVER=postgresql
+POSTGRES_CONNECTOR=asyncpg
+POSTGRES_USER=user
+POSTGRES_PASS=pass
+POSTGRES_HOST=DATABASE
+POSTGRES_PORT=5432
 DB_NAME=db_name
-```
-
->Install modules VENV
-```
-$ virtualenv env
-$ .\env\Scripts\activate
-$ pip install -r requirements.txt
 ```
 
 >Start the app
 ```
-Create database 'db_name' in PostgreSQL
+>Create database in db_container
+$ docker-compose build
+$ docker-compose up -d
+$ docker-compose exec -it database psql —host database -U
+>Create alembic migrations in the backend_container and load data into the database
+$ docker-compose exec -it backend bash
 $ alembic init migrations
 $ alembic revision --autogenerate -m "initial"
-$ alembic upgrade head
-$ uvicorn main:app --reload
+$ alembic upgrade HEAD
+$ python dbinit.py
 ```
 
-At this point, the app runs at http://127.0.0.1:8000/
-
-### OpenAPI documentation
-
-```
-This application implements swagger for documenting endpoints.
-The documentation can be accessed via the url http://.../docs
-```
+At this point, the backend runs at http://localhost:8000/
+Frontend runs at http://localhost:8000/
