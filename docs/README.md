@@ -37,6 +37,7 @@ $ docker-compose up -d
 >Create database in db_container
 ```
 $ docker-compose exec -it database psql —host database -U
+$ CREATE DATABASE db_name;
 ```
 
 >Create alembic migrations in the backend_container and load data into the database
